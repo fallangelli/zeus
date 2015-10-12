@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+</head>
+<body ng-app="todoApp" ng-controller="TodoController" ng-cloak>
+
+<ion-side-menus>
+
+    <!-- Center content -->
+    <ion-side-menu-content>
+        <ion-header-bar class="bar-dark">
+            <button class="button button-icon" ng-click="togglePositions()">
+                <i class="icon ion-navicon"></i>
+            </button>
+            <h1 class="title">{{activePosition.title}}</h1>
+            <!-- New Task button-->
+            <button class="button button-icon" ng-click="newTask()">
+                <i class="icon ion-compose"></i>
+            </button>
+        </ion-header-bar>
+        <ion-content scroll="false">
+            <ion-list ng-repeat="task in activePosition.tasks">
+                <ion-item>
+                    总资金：{{task.totalFund}}
+                    买入价：{{task.initialPrice}}
+                    建仓ATR-21：{{task.initialATR}}
+                    仓位风险系数(%)： {{task.positionRC}}%
+                    仓位振幅倍数： {{task.positionAm}}
+                    止损振幅倍数： {{task.stopAM}}
+                </ion-item>
+                <ion-item>
+                    建议仓位：{{task.advicePosition}}（股）
+                    止损：{{task.stopPrice}}（股）
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu-content>
+
+    <!-- Left menu -->
+    <ion-side-menu side="left">
+        <ion-header-bar class="bar-dark">
+            <h1 class="title">已建</h1>
+            <button class="button button-icon ion-plus" ng-click="newPosition()">
+            </button>
+        </ion-header-bar>
+        <ion-content scroll="false">
+            <ion-list>
+                <ion-item ng-repeat="position in positions" ng-click="selectPosition(position, $index)"
+                          ng-class="{active: activePosition == position}">
+                    {{position.title}}
+
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+
+</ion-side-menus>
+
+<script id="new-task.html" type="text/ng-template">
+    <div class="modal">
+
+        <!-- Modal header bar -->
+        <ion-header-bar class="bar-secondary">
+            <h1 class="title">参数维护</h1>
+            <button class="button button-clear button-positive" ng-click="closeNewTask()">Cancel</button>
+        </ion-header-bar>
+
+        <!-- Modal content area -->
+        <ion-content>
+
+            <form ng-submit="createTask(task)">
+                <div class="list">
+                    <label class="item item-input">
+                        <input type="text" placeholder="总资金" autofocus ng-model="task.totalFund">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="买入价" autofocus ng-model="task.initialPrice">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="建仓ATR-21" autofocus ng-model="task.initialATR">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="仓位风险系数（%）" autofocus ng-model="task.positionRC">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="仓位振幅倍数" autofocus ng-model="task.positionAm">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="止损振幅倍数" autofocus ng-model="task.stopAM">
+                    </label>
+
+                </div>
+                <div class="padding">
+                    <button type="submit" class="button button-block button-positive">Create Task</button>
+                </div>
+            </form>
+
+        </ion-content>
+    </div>
+</script>
+
+</body>
+</html>
