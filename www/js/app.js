@@ -12,38 +12,106 @@ todoApp.run(function ($ionicPlatform) {
 });
 
 
-todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Positions, $ionicSideMenuDelegate) {
+todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Positions, $ionicSideMenuDelegate, $http) {
 
-  // A utility function for creating a new position
-  // with the given positionTitle
-  var createPosition = function (positionTitle) {
-    var newPosition = Positions.newPosition(positionTitle);
+  $scope.doRefresh = function () {
+
+    console.log('Refreshing!');
+    $timeout(function () {
+      //simulate async response
+
+      Positions.setLastActiveIndex(Positions.getLastActiveIndex());
+      var pos = $scope.positions[Positions.getLastActiveIndex()];
+
+      loadRunTimeData(pos);
+
+      fillPosition(pos);
+      $scope.activePosition = pos;
+
+      $scope.$broadcast('scroll.refreshComplete');
+    }, 500);
+
+  };
+
+  var loadRunTimeData = function (position) {
+    //var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,0.75,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
+
+    var myUrl = "http://hq.sinajs.cn/list=" + position.code;
+    $http.get(myUrl).
+      success(function (data, status, headers, config) {
+        var temp = data.split(',')[0];
+        position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
+
+        position.todayStart = data.split(',')[1];
+        position.yestodayEnd = data.split(',')[2];
+        position.currPrice = data.split(',')[3];
+
+        $scope.currPriceColor = {color: 'blue'};
+        if (position.currPrice) {
+          if (position.currPrice < position.lowStopPrice)
+            $scope.currPriceColor = {color: 'green'};
+          if (position.lowStopPrice <= position.currPrice && position.currPrice < position.initialPrice)
+            $scope.currPriceColor = {color: 'darkgreen'};
+          if (position.initialPrice <= position.currPrice && position.currPrice < position.highStopPrice1)
+            $scope.currPriceColor = {color: 'orange'};
+          if (position.highStopPrice1 <= position.currPrice && position.currPrice < position.highStopPrice2)
+            $scope.currPriceColor = {color: 'palevioletred'};
+          if (position.highStopPrice2 <= position.currPrice && position.currPrice < position.highStopPrice3)
+            $scope.currPriceColor = {color: 'darkred'};
+          if (position.highStopPrice3 <= position.currPrice)
+            $scope.currPriceColor = {color: 'red'};
+        }
+      }
+    ).error(function (data, status, headers, config) {
+        alert("json error");
+      });
+
+  }
+// A utility function for creating a new position
+// with the given positionCode
+  var createPosition = function (positionCode) {
+
+    var newPosition = Positions.newPosition(positionCode);
+    if (positionCode.substr(0, 1) == '6')
+      newPosition.code = 'sh' + positionCode;
+    if (positionCode.substr(0, 1) == '0' || positionCode.substr(0, 1) == '3')
+      newPosition.code = 'sz' + positionCode;
+
+
     $scope.positions.push(newPosition);
     Positions.save($scope.positions);
     $scope.selectPosition(newPosition, $scope.positions.length - 1);
   }
 
 
-  // Load or initialize positions
+// Load or initialize positions
   $scope.positions = Positions.all();
 
 
-  // Grab the last active, or the first position
-  $scope.activePosition = $scope.positions[Positions.getLastActiveIndex()];
+// Grab the last active, or the first position
+  var currPos = $scope.positions[Positions.getLastActiveIndex()];
 
 
-  // Called to create a new position
+  $scope.activePosition = currPos;
+
+// Called to create a new position
   $scope.newPosition = function () {
-    var positionTitle = prompt('名称');
-    if (positionTitle) {
-      createPosition(positionTitle);
+    var positionCode = prompt('代码');
+    if (positionCode) {
+      createPosition(positionCode);
     }
   };
 
-  // Called to select the given position
+// Called to select the given position
   $scope.selectPosition = function (position, index) {
+
     Positions.setLastActiveIndex(index);
-    $scope.activePosition = $scope.positions[Positions.getLastActiveIndex()];
+    var pos = $scope.positions[Positions.getLastActiveIndex()];
+
+    loadRunTimeData(pos);
+
+    fillPosition(pos);
+    $scope.activePosition = pos;
     $ionicSideMenuDelegate.toggleLeft(false);
   };
 
@@ -56,7 +124,7 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     $ionicSideMenuDelegate.toggleLeft(false);
   };
 
-  // Create our modal
+// Create our modal
   $ionicModal.fromTemplateUrl('new-task.html', function (modal) {
     $scope.taskModal = modal;
   }, {
@@ -67,6 +135,8 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     if (!$scope.activePosition || !position) {
       return;
     }
+
+
     $scope.activePosition.totalFund = position.totalFund;
     $scope.activePosition.initialCount = position.initialCount;
     $scope.activePosition.initialPrice = position.initialPrice;
@@ -75,6 +145,7 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     $scope.activePosition.positionAm = position.positionAm;
     $scope.activePosition.stopAM = position.stopAM;
 
+    loadRunTimeData($scope.activePosition);
     fillPosition($scope.activePosition);
     //
     //$scope.activePosition.tasks.push({
@@ -106,50 +177,55 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
   };
 
 
-  // Try to create the first position, make sure to defer
-  // this by using $timeout so everything is initialized
-  // properly
+// Try to create the first position, make sure to defer
+// this by using $timeout so everything is initialized
+// properly
   $timeout(function () {
     if ($scope.positions.length == 0) {
       while (true) {
-        var positionTitle = prompt('名称:');
-        if (positionTitle) {
-          createPosition(positionTitle);
+        var positionCode = prompt('名称:');
+        if (positionCode) {
+          createPosition(positionCode);
           break;
         }
       }
     }
   });
 
-});
+})
+;
 
-function fillPosition(Position) {
-  if (Position) {
+function fillPosition(position) {
+  if (position) {
+
     //建议仓位数量
-    Position.advicePosition = Position.totalFund * Position.positionRC / (100 * Position.initialATR * 3);
+    position.advicePosition = position.totalFund * position.positionRC / (100 * position.initialATR * 3);
     //建议仓位金额
-    Position.advicePosFund = Position.advicePosition * Position.initialPrice;
+    if (position.initialPrice)
+      position.advicePosFund = position.advicePosition * position.initialPrice;
+    else
+      position.advicePosFund = position.advicePosition * position.currPrice;
     //止损价
-    Position.stopPercent = Position.stopAM * ( Position.initialATR / Position.initialPrice);
+    position.stopPercent = position.stopAM * ( position.initialATR / position.initialPrice);
 
-    Position.stopFund = Position.stopPercent * Position.initialCount * Position.initialPrice;
+    position.stopFund = position.stopPercent * position.initialCount * position.initialPrice;
 
-    Position.lowStopPrice = Position.initialPrice * (1 - Position.stopPercent);
+    position.lowStopPrice = position.initialPrice * (1 - position.stopPercent);
 
-    Position.highStopPrice1 = Position.initialPrice * (1 + Position.stopPercent * 2);
+    position.highStopPrice1 = position.initialPrice * (1 + position.stopPercent * 2);
 
-    Position.highStopPrice2 = Position.initialPrice * (1 + Position.stopPercent * 4);
+    position.highStopPrice2 = position.initialPrice * (1 + position.stopPercent * 4);
 
-    Position.highStopPrice3 = Position.initialPrice * (1 + Position.stopPercent * 6);
+    position.highStopPrice3 = position.initialPrice * (1 + position.stopPercent * 6);
 
-    Position.advicePosition = Position.advicePosition.toFixed(2);
-    Position.advicePosFund = Position.advicePosFund.toFixed(2);
-    Position.lowStopPrice = Position.lowStopPrice.toFixed(2);
-    Position.stopFund = Position.stopFund.toFixed(2);
-    Position.stopPercent = Position.stopPercent.toFixed(2);
-    Position.highStopPrice1 = Position.highStopPrice1.toFixed(2);
-    Position.highStopPrice2 = Position.highStopPrice2.toFixed(2);
-    Position.highStopPrice3 = Position.highStopPrice3.toFixed(2);
+    position.advicePosition = position.advicePosition.toFixed(2);
+    position.advicePosFund = position.advicePosFund.toFixed(2);
+    position.lowStopPrice = position.lowStopPrice.toFixed(2);
+    position.stopFund = position.stopFund.toFixed(2);
+    position.stopPercent = position.stopPercent.toFixed(2);
+    position.highStopPrice1 = position.highStopPrice1.toFixed(2);
+    position.highStopPrice2 = position.highStopPrice2.toFixed(2);
+    position.highStopPrice3 = position.highStopPrice3.toFixed(2);
   }
 }
 
@@ -159,9 +235,9 @@ todoApp.factory('Positions', function () {
       var positionString = window.localStorage['positions'];
       if (positionString) {
         var pos = angular.fromJson(positionString);
-        for (var i = 0; i < pos.length; i++) {
-          fillPosition(pos[i]);
-        }
+        //for (var i = 0; i < pos.length; i++) {
+        //  fillPosition(pos[i]);
+        //}
 
         return pos;
       }
@@ -169,12 +245,13 @@ todoApp.factory('Positions', function () {
     },
     save: function (positions) {
       window.localStorage['positions'] = angular.toJson(positions);
+
     }
     ,
-    newPosition: function (positionTitle) {
+    newPosition: function (positionCode) {
       // Add a new position
       return {
-        title: positionTitle
+        code: positionCode
       };
     }
     ,

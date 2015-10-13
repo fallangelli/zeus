@@ -19,7 +19,9 @@
   <script src="cordova.js"></script>
 
   <!-- your app's js -->
+  <script src="js/LET.js"></script>
   <script src="js/app.js"></script>
+
 </head>
 <body ng-app="todoApp" ng-controller="TodoController" ng-cloak>
 
@@ -37,32 +39,59 @@
         <i class="icon ion-compose"></i>
       </button>
     </ion-header-bar>
-    <ion-content scroll="false">
+    <ion-content>
+      <ion-refresher on-refresh="doRefresh()"
+                     pulling-text="松开刷新"
+                     refreshing-text="刷新..."
+                     refreshing-icon="ion-loading-b">
+      </ion-refresher>
+
+
       <ion-list>
         <ion-item>
-          <li>总资金：{{activePosition.totalFund}}元</li>
+          <h2 style="color:lightblue">实时信息 —— </h2>
+          <li>{{activePosition.title}}({{activePosition.code}})</li>
+
+
+          <li ng-style="currPriceColor">现价：{{activePosition.currPrice}}</li>
+
+          <li>今开：{{activePosition.todayStart}} 昨收：{{activePosition.yestodayEnd}}</li>
+
+        </ion-item>
+
+        <ion-item>
+          <p style="color:darkgreen">止损：{{activePosition.lowStopPrice}}元 ( R = {{activePosition.stopFund}})</p>
+        </ion-item>
+
+
+        <ion-item>
+          <p style="color:palevioletred">第一止盈（30%）：{{activePosition.highStopPrice1}}元</p>
+
+          <p style="color:darkred">第二止盈（20%）：{{activePosition.highStopPrice2}}元</p>
+
+          <p style="color:red">第三止盈（10%）：{{activePosition.highStopPrice3}}元</p>
+        </ion-item>
+
+        <ion-item>
+          <h2 style="color:blue">买入后参数 —— </h2>
           <li>买入价：{{activePosition.initialPrice}}元</li>
           <li>买入数量：{{activePosition.initialCount}}(股)</li>
+        </ion-item>
+
+        <ion-item>
+          <p style="color:darkgoldenrod">建议仓位：{{activePosition.advicePosition}}股 - {{activePosition.advicePosFund}}元</p>
+        </ion-item>
+
+        <ion-item>
+          <h2 style="color:blue">买入前参数 —— </h2>
+          <li>总资金：{{activePosition.totalFund}}元</li>
           <li>建仓ATR-21：{{activePosition.initialATR}}</li>
           <li>仓位风险系数：{{activePosition.positionRC}}%</li>
           <li>仓位振幅倍数： {{activePosition.positionAm}}</li>
           <li>止损振幅倍数： {{activePosition.stopAM}}</li>
         </ion-item>
-        <ion-item>
-          <p style="color:darkgoldenrod">建议仓位：{{activePosition.advicePosition}}股 - {{activePosition.advicePosFund}}元</p>
-        </ion-item>
-        <ion-item>
-          <p style="color:red">止损：{{activePosition.lowStopPrice}}元 ( R = {{activePosition.stopFund}})</p>
-        </ion-item>
-        <ion-item>
-          <p style="color:darkgreen">第一止盈（30%）：{{activePosition.highStopPrice1}}元</p>
-        </ion-item>
-        <ion-item>
-          <p style="color:darkolivegreen">第二止盈（20%）：{{activePosition.highStopPrice2}}元</p>
-        </ion-item>
-        <ion-item>
-          <p style="color:limegreen">第三止盈（10%）：{{activePosition.highStopPrice3}}元</p>
-        </ion-item>
+
+
       </ion-list>
     </ion-content>
   </ion-side-menu-content>
@@ -82,16 +111,16 @@
                   type="item-text-wrap">
           <!--<img ng-src="{{chat.face}}">-->
 
-          <h2>{{position.title}}</h2>
+          <h2>{{position.title}}({{position.code}})</h2>
 
           <p>
-            <b style="color: darkred">{{position.lowStopPrice}}</b>
+            <b style="color: darkgreen">{{position.lowStopPrice}}</b>
 
-            <b style="color:darkgreen">{{position.highStopPrice1}}</b>
+            <b style="color:palevioletred">{{position.highStopPrice1}}</b>
 
-            <b style="color:darkolivegreen">{{position.highStopPrice2}}</b>
+            <b style="color:darkred">{{position.highStopPrice2}}</b>
 
-            <b style="color:limegreen">{{position.highStopPrice3}}</b>
+            <b style="color:red">{{position.highStopPrice3}}</b>
           </p>
 
           <i class="icon ion-chevron-right icon-accessory"></i>
@@ -151,15 +180,11 @@
     <ion-content>
 
       <form ng-submit="createTask(activePosition)">
+        <p style="color:dimgrey">买入前参数</p>
+
         <div class="list">
           <label class="item item-input">
             <input type="text" placeholder="总资金" autofocus ng-model="activePosition.totalFund">
-          </label>
-          <label class="item item-input">
-            <input type="text" placeholder="买入价" autofocus ng-model="activePosition.initialPrice">
-          </label>
-          <label class="item item-input">
-            <input type="text" placeholder="买入数量" autofocus ng-model="activePosition.initialCount">
           </label>
           <label class="item item-input">
             <input type="text" placeholder="建仓ATR-21" autofocus ng-model="activePosition.initialATR">
@@ -172,6 +197,16 @@
           </label>
           <label class="item item-input">
             <input type="text" placeholder="止损振幅倍数" autofocus ng-model="activePosition.stopAM">
+          </label>
+        </div>
+        <p style="color:dimgrey">买入后参数</p>
+
+        <div class="list">
+          <label class="item item-input">
+            <input type="text" placeholder="买入价" autofocus ng-model="activePosition.initialPrice">
+          </label>
+          <label class="item item-input">
+            <input type="text" placeholder="买入数量" autofocus ng-model="activePosition.initialCount">
           </label>
 
         </div>
