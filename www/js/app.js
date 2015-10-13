@@ -63,16 +63,17 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     scope: $scope
   });
 
-  $scope.createTask = function (task) {
-    if (!$scope.activePosition || !task) {
+  $scope.createTask = function (position) {
+    if (!$scope.activePosition || !position) {
       return;
     }
-    $scope.activePosition.totalFund = task.totalFund;
-    $scope.activePosition.initialPrice = task.initialPrice;
-    $scope.activePosition.initialATR = task.initialATR;
-    $scope.activePosition.positionRC = task.positionRC;
-    $scope.activePosition.positionAm = task.positionAm;
-    $scope.activePosition.stopAM = task.stopAM;
+    $scope.activePosition.totalFund = position.totalFund;
+    $scope.activePosition.initialCount = position.initialCount;
+    $scope.activePosition.initialPrice = position.initialPrice;
+    $scope.activePosition.initialATR = position.initialATR;
+    $scope.activePosition.positionRC = position.positionRC;
+    $scope.activePosition.positionAm = position.positionAm;
+    $scope.activePosition.stopAM = position.stopAM;
 
     fillPosition($scope.activePosition);
     //
@@ -124,17 +125,30 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
 
 function fillPosition(Position) {
   if (Position) {
+    //建议仓位数量
     Position.advicePosition = Position.totalFund * Position.positionRC / (100 * Position.initialATR * 3);
-    Position.advicePosition = Position.advicePosition.toFixed(2);
+    //建议仓位金额
+    Position.advicePosFund = Position.advicePosition * Position.initialPrice;
+    //止损价
     Position.stopPercent = Position.stopAM * ( Position.initialATR / Position.initialPrice);
-    Position.stopPercent = Position.stopPercent.toFixed(2);
+
+    Position.stopFund = Position.stopPercent * Position.initialCount * Position.initialPrice;
+
     Position.lowStopPrice = Position.initialPrice * (1 - Position.stopPercent);
-    Position.lowStopPrice = Position.lowStopPrice.toFixed(2);
+
     Position.highStopPrice1 = Position.initialPrice * (1 + Position.stopPercent * 2);
-    Position.highStopPrice1 = Position.highStopPrice1.toFixed(2);
+
     Position.highStopPrice2 = Position.initialPrice * (1 + Position.stopPercent * 4);
-    Position.highStopPrice2 = Position.highStopPrice2.toFixed(2);
+
     Position.highStopPrice3 = Position.initialPrice * (1 + Position.stopPercent * 6);
+
+    Position.advicePosition = Position.advicePosition.toFixed(2);
+    Position.advicePosFund = Position.advicePosFund.toFixed(2);
+    Position.lowStopPrice = Position.lowStopPrice.toFixed(2);
+    Position.stopFund = Position.stopFund.toFixed(2);
+    Position.stopPercent = Position.stopPercent.toFixed(2);
+    Position.highStopPrice1 = Position.highStopPrice1.toFixed(2);
+    Position.highStopPrice2 = Position.highStopPrice2.toFixed(2);
     Position.highStopPrice3 = Position.highStopPrice3.toFixed(2);
   }
 }

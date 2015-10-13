@@ -40,27 +40,28 @@
     <ion-content scroll="false">
       <ion-list>
         <ion-item>
-          <li>总资金：{{activePosition.totalFund}}</li>
-          <li>买入价：{{activePosition.initialPrice}}</li>
+          <li>总资金：{{activePosition.totalFund}}元</li>
+          <li>买入价：{{activePosition.initialPrice}}元</li>
+          <li>买入数量：{{activePosition.initialCount}}(股)</li>
           <li>建仓ATR-21：{{activePosition.initialATR}}</li>
-          <li>仓位风险系数(%)：{{activePosition.positionRC}}%</li>
+          <li>仓位风险系数：{{activePosition.positionRC}}%</li>
           <li>仓位振幅倍数： {{activePosition.positionAm}}</li>
           <li>止损振幅倍数： {{activePosition.stopAM}}</li>
         </ion-item>
         <ion-item>
-          <p style="color:darkgoldenrod">建议仓位：{{activePosition.advicePosition}}（股）</p>
+          <p style="color:darkgoldenrod">建议仓位：{{activePosition.advicePosition}}股 - {{activePosition.advicePosFund}}元</p>
         </ion-item>
         <ion-item>
-          <p style="color:red">止损：{{activePosition.lowStopPrice}}</p>
+          <p style="color:red">止损：{{activePosition.lowStopPrice}}元 ( R = {{activePosition.stopFund}})</p>
         </ion-item>
         <ion-item>
-          <p style="color:darkgreen">第一止盈（30%）：{{activePosition.highStopPrice1}}</p>
+          <p style="color:darkgreen">第一止盈（30%）：{{activePosition.highStopPrice1}}元</p>
         </ion-item>
         <ion-item>
-          <p style="color:darkolivegreen">第二止盈（20%）：{{activePosition.highStopPrice2}}</p>
+          <p style="color:darkolivegreen">第二止盈（20%）：{{activePosition.highStopPrice2}}元</p>
         </ion-item>
         <ion-item>
-          <p style="color:limegreen">第三止盈（10%）：{{activePosition.highStopPrice3}}</p>
+          <p style="color:limegreen">第三止盈（10%）：{{activePosition.highStopPrice3}}元</p>
         </ion-item>
       </ion-list>
     </ion-content>
@@ -73,13 +74,64 @@
       <button class="button button-icon ion-plus" ng-click="newPosition()">
       </button>
     </ion-header-bar>
-    <ion-content scroll="false">
+    <ion-content>
+
       <ion-list>
-        <ion-item ng-repeat="position in positions" ng-click="selectPosition(position, $index)"
-                  ng-class="{active: activePosition == position}">
-          {{position.title}}
-          <button ng-click="delPosition(position, $index)"></button>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="position in positions"
+                  ng-class="{active: activePosition == position}" ng-click="selectPosition(position, $index)"
+                  type="item-text-wrap">
+          <!--<img ng-src="{{chat.face}}">-->
+
+          <h2>{{position.title}}</h2>
+
+          <p>
+            <b style="color: darkred">{{position.lowStopPrice}}</b>
+
+            <b style="color:darkgreen">{{position.highStopPrice1}}</b>
+
+            <b style="color:darkolivegreen">{{position.highStopPrice2}}</b>
+
+            <b style="color:limegreen">{{position.highStopPrice3}}</b>
+          </p>
+
+          <i class="icon ion-chevron-right icon-accessory"></i>
+
+          <ion-option-button class="button-assertive" ng-click="delPosition(position, $index)">
+            Delete
+          </ion-option-button>
         </ion-item>
+      </ion-list>
+
+      <!--<ion-item class="item-remove-animate item-avatar item-icon-right"-->
+      <!--ng-repeat="position in positions"-->
+      <!--ng-click="selectPosition(position, $index)"-->
+      <!--ng-class="{active: activePosition == position}"-->
+      <!--type="item-text-wrap">-->
+
+      <!--<h2>{{position.title}}</h2>-->
+
+      <!--&lt;!&ndash;<p>&ndash;&gt;-->
+      <!--&lt;!&ndash;<b style="color: darkred">{{position.lowStopPrice}}</b>&ndash;&gt;-->
+
+      <!--&lt;!&ndash;<b style="color:darkgreen">{{position.highStopPrice1}}</b>&ndash;&gt;-->
+
+      <!--&lt;!&ndash;<b style="color:darkolivegreen">{{position.highStopPrice2}}</b>&ndash;&gt;-->
+
+      <!--&lt;!&ndash;<b style="color:limegreen">{{position.highStopPrice3}}</b>&ndash;&gt;-->
+      <!--&lt;!&ndash;</p>&ndash;&gt;-->
+
+
+      <!--<i class="icon ion-chevron-right icon-accessory"></i>-->
+
+      <!--<ion-option-button class="button-assertive" ng-click="delPosition(position, $index)">-->
+      <!--删除-->
+      <!--</ion-option-button>-->
+      <!--</ion-item>-->
+      <!--<ion-item ng-repeat="position in positions" ng-click="selectPosition(position, $index)"-->
+      <!--ng-class="{active: activePosition == position}">-->
+      <!--{{position.title}}-->
+      <!--<button ng-click="delPosition(position, $index)"></button>-->
+      <!--</ion-item>-->
       </ion-list>
     </ion-content>
   </ion-side-menu>
@@ -98,25 +150,28 @@
     <!-- Modal content area -->
     <ion-content>
 
-      <form ng-submit="createTask(task)">
+      <form ng-submit="createTask(activePosition)">
         <div class="list">
           <label class="item item-input">
-            <input type="text" placeholder="总资金" autofocus ng-model="task.totalFund">
+            <input type="text" placeholder="总资金" autofocus ng-model="activePosition.totalFund">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="买入价" autofocus ng-model="task.initialPrice">
+            <input type="text" placeholder="买入价" autofocus ng-model="activePosition.initialPrice">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="建仓ATR-21" autofocus ng-model="task.initialATR">
+            <input type="text" placeholder="买入数量" autofocus ng-model="activePosition.initialCount">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="仓位风险系数（%）" autofocus ng-model="task.positionRC">
+            <input type="text" placeholder="建仓ATR-21" autofocus ng-model="activePosition.initialATR">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="仓位振幅倍数" autofocus ng-model="task.positionAm">
+            <input type="text" placeholder="仓位风险系数（%）" autofocus ng-model="activePosition.positionRC">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="止损振幅倍数" autofocus ng-model="task.stopAM">
+            <input type="text" placeholder="仓位振幅倍数" autofocus ng-model="activePosition.positionAm">
+          </label>
+          <label class="item item-input">
+            <input type="text" placeholder="止损振幅倍数" autofocus ng-model="activePosition.stopAM">
           </label>
 
         </div>
