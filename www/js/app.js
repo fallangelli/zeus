@@ -14,6 +14,14 @@ todoApp.run(function ($ionicPlatform) {
 
 todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Positions, $ionicSideMenuDelegate, $http) {
 
+  $scope.openDayGif = function (code) {
+    window.open("http://image.sinajs.cn/newchart/daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+  };
+
+  $scope.openMinGif = function (code) {
+    window.open("http://image.sinajs.cn/newchart/min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+  };
+
   $scope.refreshAll = function () {
     $timeout(function () {
       var positions = Positions.all();
@@ -47,44 +55,44 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
   };
 
   var loadRunTimeData = function (position) {
-    //var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,0.75,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
-    var myUrl = "http://hq.sinajs.cn/list=" + position.code;
-    $http.get(myUrl).success(function (data, status, headers, config) {
-        var temp = data.split(',')[0];
-        position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
+    var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,0.75,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
+    //var myUrl = "http://hq.sinajs.cn/list=" + position.code;
+    //$http.get(myUrl).success(function (data, status, headers, config) {
+    var temp = data.split(',')[0];
+    position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
 
-        position.todayStart = data.split(',')[1];
-        position.yestodayEnd = data.split(',')[2];
-        position.currPrice = data.split(',')[3];
+    position.todayStart = data.split(',')[1];
+    position.yestodayEnd = data.split(',')[2];
+    position.currPrice = data.split(',')[3];
 
-        position.currPriceColor = {color: 'blue'};
-        if (position.currPrice) {
-          if (position.currPrice < position.lowStopPrice)
-            position.currPriceColor = {color: 'green'};
-          else if (position.lowStopPrice <= position.currPrice && position.currPrice < position.initialPrice)
-            position.currPriceColor = {color: 'darkgreen'};
-          else if (position.initialPrice <= position.currPrice && position.currPrice < position.highStopPrice1)
-            position.currPriceColor = {color: 'orange'};
-          else if (position.highStopPrice1 <= position.currPrice && position.currPrice < position.highStopPrice2)
-            position.currPriceColor = {color: 'palevioletred'};
-          else if (position.highStopPrice2 <= position.currPrice && position.currPrice < position.highStopPrice3)
-            position.currPriceColor = {color: 'darkred'};
-          else if (position.highStopPrice3 <= position.currPrice)
-            position.currPriceColor = {color: 'red'};
-        }
+    position.currPriceColor = {color: 'blue'};
+    if (position.currPrice) {
+      if (position.currPrice < position.lowStopPrice)
+        position.currPriceColor = {color: 'green'};
+      else if (position.lowStopPrice <= position.currPrice && position.currPrice < position.initialPrice)
+        position.currPriceColor = {color: 'darkgreen'};
+      else if (position.initialPrice <= position.currPrice && position.currPrice < position.highStopPrice1)
+        position.currPriceColor = {color: 'orange'};
+      else if (position.highStopPrice1 <= position.currPrice && position.currPrice < position.highStopPrice2)
+        position.currPriceColor = {color: 'palevioletred'};
+      else if (position.highStopPrice2 <= position.currPrice && position.currPrice < position.highStopPrice3)
+        position.currPriceColor = {color: 'darkred'};
+      else if (position.highStopPrice3 <= position.currPrice)
+        position.currPriceColor = {color: 'red'};
+    }
 
-        if (position.currPrice && position.initialPrice && position.initialCount) {
-          position.currChangePercent = (position.currPrice - position.initialPrice) * 100 / position.initialPrice;
-          position.currChange = (position.currPrice - position.initialPrice) * position.initialCount;
+    if (position.currPrice && position.initialPrice && position.initialCount) {
+      position.currChangePercent = (position.currPrice - position.initialPrice) * 100 / position.initialPrice;
+      position.currChange = (position.currPrice - position.initialPrice) * position.initialCount;
 
-          position.currChangePercent = position.currChangePercent.toFixed(3);
-          position.currChange = position.currChange.toFixed(2);
-        }
-      }
-    ).error(function (data, status, headers, config) {
-        alert("读取实时信息错误");
-      }
-    );
+      position.currChangePercent = position.currChangePercent.toFixed(3);
+      position.currChange = position.currChange.toFixed(2);
+    }
+    //  }
+    //).error(function (data, status, headers, config) {
+    //    alert("读取实时信息错误");
+    //  }
+    //);
 
   }
 // A utility function for creating a new position

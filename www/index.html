@@ -46,10 +46,21 @@
       </ion-refresher>
 
 
+      <div class="item">
+
+        <button class="button button-positive" ng-click="openDayGif('{{activePosition.code}}')">日线</button>
+
+        <button class="button button-positive" ng-click="openMinGif('{{activePosition.code}}')">分时线</button>
+      </div>
+
+
       <ion-list>
         <ion-item>
+
+
           <h2 style="color:lightblue">实时信息 —— </h2>
-          <li>{{activePosition.title}}({{activePosition.code}})</li>
+          <li>{{activePosition.title}}({{activePosition.code}})
+          </li>
 
 
           <li ng-style="activePosition.currPriceColor">
