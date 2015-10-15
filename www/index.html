@@ -48,10 +48,10 @@
 
       <div class="item">
         <button class="button button-royal"
-                ng-click="openDayGif('{{activePosition.code}}')">日线
+                ng-click="openDayGif(activePosition.code)">日线
         </button>
 
-        <button class="button button-royal" ng-click="openMinGif('{{activePosition.code}}')">分时线</button>
+        <button class="button button-royal" ng-click="openMinGif(activePosition.code)">分时线</button>
       </div>
 
       <form ng-submit="updateRealATR(activePosition)">
