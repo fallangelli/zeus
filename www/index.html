@@ -47,25 +47,36 @@
 
 
       <div class="item">
+        <button class="button button-royal"
+                ng-click="openDayGif('{{activePosition.code}}')">日线
+        </button>
 
-        <button class="button button-positive" ng-click="openDayGif('{{activePosition.code}}')">日线</button>
-
-        <button class="button button-positive" ng-click="openMinGif('{{activePosition.code}}')">分时线</button>
+        <button class="button button-royal" ng-click="openMinGif('{{activePosition.code}}')">分时线</button>
       </div>
 
+      <form ng-submit="updateRealATR(activePosition)">
+        <label class="item item-input">最新ATR:
+          <input type="text" placeholder="计算止盈价，不填则按买入时atr计算" ng-model="activePosition.realATR">
+          <span><button type="submit" class="button button-positive">更新</button></span>
+        </label>
+      </form>
 
       <ion-list>
         <ion-item>
-
-
           <h2 style="color:lightblue">实时信息 —— </h2>
+
           <li>{{activePosition.title}}({{activePosition.code}})
+            <b ng-style="activePosition.currPriceColor">{{activePosition.currMount}}元</b>
           </li>
 
 
           <li ng-style="activePosition.currPriceColor">
-            现价：{{activePosition.currPrice}}({{activePosition.currChangePercent}}%
+            现价：{{activePosition.currPrice}} ({{activePosition.currChangePercent}}%
             {{activePosition.currChange}}元)
+          </li>
+
+          <li ng-style="activePosition.currHighPriceColor">
+            最新止盈价：{{activePosition.realhighStopPrice}}
           </li>
 
           <li>今开：{{activePosition.todayStart}} 昨收：{{activePosition.yestodayEnd}}</li>
@@ -79,11 +90,11 @@
 
 
         <ion-item>
-          <p style="color:palevioletred">第一止盈（30%）：{{activePosition.highStopPrice1}}元</p>
+          <p style="color:palevioletred">第一止盈（6*atr）：{{activePosition.highStopPrice1}}元</p>
 
-          <p style="color:darkred">第二止盈（20%）：{{activePosition.highStopPrice2}}元</p>
+          <p style="color:darkred">第二止盈（4*atr）：{{activePosition.highStopPrice2}}元</p>
 
-          <p style="color:red">第三止盈（10%）：{{activePosition.highStopPrice3}}元</p>
+          <p style="color:red">第三止盈（2*atr）：{{activePosition.highStopPrice3}}元</p>
         </ion-item>
 
         <ion-item>
@@ -102,7 +113,6 @@
           <li>总资金：{{activePosition.totalFund}}元</li>
           <li>建仓ATR-21：{{activePosition.initialATR}}</li>
           <li>仓位风险系数：{{activePosition.positionRC}}%</li>
-          <li>仓位振幅倍数： {{activePosition.positionAm}}</li>
           <li>止损振幅倍数： {{activePosition.stopAM}}</li>
         </ion-item>
 
@@ -136,9 +146,13 @@
 
           <h2>{{position.title}}({{position.code}})</h2>
 
-          <p ng-style="position.currPriceColor">{{position.currPrice}} - {{position.initialPrice}}</p>
+          <p ng-style="position.currPriceColor">{{position.currPrice}}&nbsp&nbsp-&nbsp&nbsp{{position.initialPrice}}</p>
 
-          <p ng-style="position.currPriceColor">{{position.currChangePercent}}% {{position.currChange}}元
+          <p ng-style="position.currDayPriceColor">当日 {{position.currDayChangePercent}}% {{position.currDayChange}}元
+          </p>
+
+          <p ng-style="position.currHighPriceColor">
+            最新止盈价：{{position.realhighStopPrice}}
           </p>
 
           <p>
@@ -212,29 +226,36 @@
 
         <div class="list">
           <label class="item item-input">
-            <input type="text" placeholder="总资金" autofocus ng-model="activePosition.totalFund">
+            <span class="input-label">总资金 :</span>
+            <input type="text" placeholder="计算推荐仓位" ng-model="activePosition.totalFund">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="建仓ATR-21" autofocus ng-model="activePosition.initialATR">
+            <span class="input-label">仓位风险系数（%） :</span>
+
+            <input type="text" placeholder="计算推荐仓位" ng-model="activePosition.positionRC">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="仓位风险系数（%）" autofocus ng-model="activePosition.positionRC">
+            <span class="input-label">建仓ATR-21 :</span>
+
+            <input type="text" placeholder="计算推荐仓位、止损线" ng-model="activePosition.initialATR">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="仓位振幅倍数" autofocus ng-model="activePosition.positionAm">
+            <span class="input-label">止损振幅倍数 :</span>
+
+            <input type="text" placeholder="计算仓位、止损线，推荐2.7~3.4" ng-model="activePosition.stopAM">
           </label>
-          <label class="item item-input">
-            <input type="text" placeholder="止损振幅倍数" autofocus ng-model="activePosition.stopAM">
-          </label>
+
         </div>
         <p style="color:dimgrey">买入后参数</p>
 
         <div class="list">
           <label class="item item-input">
-            <input type="text" placeholder="买入价" autofocus ng-model="activePosition.initialPrice">
+            <span class="input-label">买入价 :</span>
+            <input type="text" placeholder="买入价" ng-model="activePosition.initialPrice">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="买入数量" autofocus ng-model="activePosition.initialCount">
+            <span class="input-label">买入数量 :</span>
+            <input type="text" placeholder="买入数量" ng-model="activePosition.initialCount">
           </label>
 
         </div>

@@ -22,6 +22,28 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     window.open("http://image.sinajs.cn/newchart/min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
   };
 
+  $scope.updateRealATR = function (position) {
+
+    var allPos = Positions.all();
+    for (var i = 0; i < allPos.length; i++) {
+      if (allPos[i].code == position.code) {
+        allPos[i].realATR = position.realATR;
+        $scope.positions = allPos;
+        Positions.save($scope.positions);
+      }
+    }
+
+
+    loadRunTimeData(position);
+    fillPosition(position);
+
+    $scope.activePosition = position;
+
+    //window.localStorage['positions'] = angular.toJson(positions);
+
+
+  };
+
   $scope.refreshAll = function () {
     $timeout(function () {
       var positions = Positions.all();
@@ -55,44 +77,86 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
   };
 
   var loadRunTimeData = function (position) {
-    var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,0.75,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
-    //var myUrl = "http://hq.sinajs.cn/list=" + position.code;
-    //$http.get(myUrl).success(function (data, status, headers, config) {
-    var temp = data.split(',')[0];
-    position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
+    //var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,14.30,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
+    var myUrl = "http://hq.sinajs.cn/list=" + position.code;
+    $http.get(myUrl).success(function (data, status, headers, config) {
+        var temp = data.split(',')[0];
+        position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
 
-    position.todayStart = data.split(',')[1];
-    position.yestodayEnd = data.split(',')[2];
-    position.currPrice = data.split(',')[3];
+        position.todayStart = data.split(',')[1];
+        position.yestodayEnd = data.split(',')[2];
+        position.currPrice = data.split(',')[3];
+        position.currMount = position.currPrice * position.initialCount;
+        position.currMount = position.currMount.toFixed(2);
 
-    position.currPriceColor = {color: 'blue'};
-    if (position.currPrice) {
-      if (position.currPrice < position.lowStopPrice)
-        position.currPriceColor = {color: 'green'};
-      else if (position.lowStopPrice <= position.currPrice && position.currPrice < position.initialPrice)
-        position.currPriceColor = {color: 'darkgreen'};
-      else if (position.initialPrice <= position.currPrice && position.currPrice < position.highStopPrice1)
-        position.currPriceColor = {color: 'orange'};
-      else if (position.highStopPrice1 <= position.currPrice && position.currPrice < position.highStopPrice2)
-        position.currPriceColor = {color: 'palevioletred'};
-      else if (position.highStopPrice2 <= position.currPrice && position.currPrice < position.highStopPrice3)
-        position.currPriceColor = {color: 'darkred'};
-      else if (position.highStopPrice3 <= position.currPrice)
-        position.currPriceColor = {color: 'red'};
-    }
 
-    if (position.currPrice && position.initialPrice && position.initialCount) {
-      position.currChangePercent = (position.currPrice - position.initialPrice) * 100 / position.initialPrice;
-      position.currChange = (position.currPrice - position.initialPrice) * position.initialCount;
+        position.currDayPriceColor = {color: 'blue'};
+        if (position.currPrice && position.yestodayEnd) {
+          if (parseFloat(position.currPrice) < parseFloat(position.yestodayEnd))
+            position.currDayPriceColor = {color: 'darkgreen'};
+          else if (parseFloat(position.yestodayEnd) <= parseFloat(position.currPrice))
+            position.currDayPriceColor = {color: 'darkRed'};
 
-      position.currChangePercent = position.currChangePercent.toFixed(3);
-      position.currChange = position.currChange.toFixed(2);
-    }
-    //  }
-    //).error(function (data, status, headers, config) {
-    //    alert("读取实时信息错误");
-    //  }
-    //);
+          position.currDayChangePercent = (position.currPrice - position.yestodayEnd) * 100 / position.yestodayEnd;
+          position.currDayChange = (position.currPrice - position.yestodayEnd) * position.initialCount;
+
+          position.currDayChangePercent = position.currDayChangePercent.toFixed(3);
+          position.currDayChange = position.currDayChange.toFixed(2);
+        }
+
+
+        position.currPriceColor = {color: 'blue'};
+        if (position.currPrice) {
+          if (parseFloat(position.currPrice) < parseFloat(position.lowStopPrice))
+            position.currPriceColor = {color: 'green'};
+          else if (parseFloat(position.lowStopPrice) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.initialPrice))
+            position.currPriceColor = {color: 'darkgreen'};
+          else if (parseFloat(position.initialPrice) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice1))
+            position.currPriceColor = {color: 'orange'};
+          else if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice2))
+            position.currPriceColor = {color: 'palevioletred'};
+          else if (parseFloat(position.highStopPrice2) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice3))
+            position.currPriceColor = {color: 'darkred'};
+          else if (parseFloat(position.highStopPrice3) <= parseFloat(position.currPrice))
+            position.currPriceColor = {color: 'red'};
+        }
+
+        position.realhighStopPrice = '无';
+        position.currHighPriceColor = {color: 'blue'};
+        if (position.currPrice) {
+          var atr = position.realATR ? position.realATR : position.initialATR;
+
+          if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice2)) {
+            position.realhighStopPrice = position.currPrice - 6 * atr;
+            position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
+            position.currHighPriceColor = position.currPriceColor;
+          }
+          else if (parseFloat(position.highStopPrice2) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice3)) {
+            position.realhighStopPrice = position.currPrice - 4 * atr;
+            position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
+            position.currHighPriceColor = position.currPriceColor;
+          }
+          else if (parseFloat(position.highStopPrice3) <= parseFloat(position.currPrice)) {
+            position.realhighStopPrice = position.currPrice - 2 * atr;
+            position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
+            position.currHighPriceColor = position.currPriceColor;
+          }
+        }
+
+        if (position.currPrice && position.initialPrice && position.initialCount) {
+          position.currChangePercent = (position.currPrice - position.initialPrice) * 100 / position.initialPrice;
+          position.currChange = (position.currPrice - position.initialPrice) * position.initialCount;
+
+          position.currChangePercent = position.currChangePercent.toFixed(3);
+          position.currChange = position.currChange.toFixed(2);
+        }
+
+      }
+    ).
+      error(function (data, status, headers, config) {
+        alert("读取实时信息错误");
+      }
+    );
 
   }
 // A utility function for creating a new position
@@ -169,7 +233,6 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     $scope.activePosition.initialPrice = position.initialPrice;
     $scope.activePosition.initialATR = position.initialATR;
     $scope.activePosition.positionRC = position.positionRC;
-    $scope.activePosition.positionAm = position.positionAm;
     $scope.activePosition.stopAM = position.stopAM;
 
     loadRunTimeData($scope.activePosition);
@@ -180,7 +243,6 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     //  initialPrice: task.initialPrice,
     //  initialATR: task.initialATR,
     //  positionRC: task.positionRC,
-    //  positionAm: task.positionAm,
     //  stopAM: task.stopAM
     //});
     $scope.taskModal.hide();
@@ -226,7 +288,7 @@ function fillPosition(position) {
   if (position) {
 
     //建议仓位数量
-    position.advicePosition = position.totalFund * position.positionRC / ( position.initialATR * position.positionAm * 100);
+    position.advicePosition = position.totalFund * position.positionRC / ( position.initialATR * position.stopAM * 100);
     //建议仓位金额
     if (position.initialPrice)
       position.advicePosFund = position.advicePosition * position.initialPrice;
@@ -284,7 +346,7 @@ todoApp.factory('Positions', function () {
     }
     ,
     getLastActiveIndex: function () {
-      return parseInt(window.localStorage['lastActivePosition']) || 0;
+      return parseFloat(window.localStorage['lastActivePosition']) || 0;
     }
     ,
     setLastActiveIndex: function (index) {

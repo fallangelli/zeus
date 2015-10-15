@@ -1,0 +1,23 @@
+cordova build --release android
+
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1  -tsa https://timestamp.geotrust.com/tsa -keystore D:\dev_env\android_keys\my-release-key.keystore E:\zeus\platforms\an
+droid\ant-build\MainActivity-release-unsigned.apk release_alias
+
+
+
+keytool -genkey -v -keystore D:\dev_env\android_keys/my-release-key.keystore -alias release_alias -keyalg RSA -validity 365
+CN=lzheng, OU=rcub, O=中征, L=北京, ST=北京, C=CA是否正确?            
+
+
+
+D:\dev_env\android-sdk-windows\build-tools\22.0.1>zipalign -v 4 E:\zeus\platforms\android\ant-build\MainActivity-release-unsigned.apk zeus-2.3.5.apk
+
+
+
+600892 37.725 200 1
+002244 7.153 400 0.165
+300368 18.556 800 0.521
+600090 12.075 1000 0.387
+002701 23.165 900 0.455
+300433 69.74 300 2.473
