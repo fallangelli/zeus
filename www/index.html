@@ -28,16 +28,23 @@
 
   <!-- Center content -->
   <ion-side-menu-content>
+
     <ion-header-bar class="bar-dark">
-      <button class="button button-icon" ng-click="togglePositions()">
+
+      <button class="button button-icon" ng-click="toggleLeft()">
         <i class="icon ion-navicon"></i>
       </button>
-      <h1 class="title">{{activePosition.title}}</h1>
-      <!-- New Task button-->
-      <button class="button button-icon" ng-click="newTask()">
-        <i class="icon ion-compose"></i>
+
+
+      <h1 class="title" align="center">{{activePosition.title}}</h1>
+
+
+      <button class="button button-clear" align="right" ng-click="toggleRight()">
+        <i class="icon ion-navicon"></i>
       </button>
+
     </ion-header-bar>
+
     <ion-content>
       <ion-refresher on-refresh="doRefresh()"
                      pulling-text="松开刷新"
@@ -47,11 +54,19 @@
 
 
       <div class="item">
+
+
+        <button class="button item-button-left"
+                ng-click="newTask()">参数维护
+        </button>
+
         <button class="button button-royal"
                 ng-click="openDayGif(activePosition.code)">日线
         </button>
 
         <button class="button button-royal" ng-click="openMinGif(activePosition.code)">分时线</button>
+
+
       </div>
 
       <form ng-submit="updateRealATR(activePosition)">
@@ -90,9 +105,9 @@
 
 
         <ion-item>
-          <p style="color:palevioletred">第一止盈（6*atr）：{{activePosition.highStopPrice1}}元</p>
+          <p style="color:palevioletred">第一止盈（4*atr）：{{activePosition.highStopPrice1}}元</p>
 
-          <p style="color:darkred">第二止盈（4*atr）：{{activePosition.highStopPrice2}}元</p>
+          <p style="color:darkred">第二止盈（3*atr）：{{activePosition.highStopPrice2}}元</p>
 
           <p style="color:red">第三止盈（2*atr）：{{activePosition.highStopPrice3}}元</p>
         </ion-item>
@@ -177,40 +192,72 @@
         </ion-item>
       </ion-list>
 
-      <!--<ion-item class="item-remove-animate item-avatar item-icon-right"-->
-      <!--ng-repeat="position in positions"-->
-      <!--ng-click="selectPosition(position, $index)"-->
-      <!--ng-class="{active: activePosition == position}"-->
-      <!--type="item-text-wrap">-->
-
-      <!--<h2>{{position.title}}</h2>-->
-
-      <!--&lt;!&ndash;<p>&ndash;&gt;-->
-      <!--&lt;!&ndash;<b style="color: darkred">{{position.lowStopPrice}}</b>&ndash;&gt;-->
-
-      <!--&lt;!&ndash;<b style="color:darkgreen">{{position.highStopPrice1}}</b>&ndash;&gt;-->
-
-      <!--&lt;!&ndash;<b style="color:darkolivegreen">{{position.highStopPrice2}}</b>&ndash;&gt;-->
-
-      <!--&lt;!&ndash;<b style="color:limegreen">{{position.highStopPrice3}}</b>&ndash;&gt;-->
-      <!--&lt;!&ndash;</p>&ndash;&gt;-->
-
-
-      <!--<i class="icon ion-chevron-right icon-accessory"></i>-->
-
-      <!--<ion-option-button class="button-assertive" ng-click="delPosition(position, $index)">-->
-      <!--删除-->
-      <!--</ion-option-button>-->
-      <!--</ion-item>-->
-      <!--<ion-item ng-repeat="position in positions" ng-click="selectPosition(position, $index)"-->
-      <!--ng-class="{active: activePosition == position}">-->
-      <!--{{position.title}}-->
-      <!--<button ng-click="delPosition(position, $index)"></button>-->
-      <!--</ion-item>-->
-      </ion-list>
     </ion-content>
   </ion-side-menu>
 
+  <ion-side-menu side="right">
+    <ion-header-bar class="bar-dark">
+      <h1 class="title">多空行情</h1>
+
+    </ion-header-bar>
+
+    <ion-content>
+      <ion-list>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open300();"
+                  type="item-text-wrap">沪深300-实时
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open300k();"
+                  type="item-text-wrap">沪深300-日k
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878002();"
+                  type="item-text-wrap">沪深300-看涨
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878003();"
+                  type="item-text-wrap">沪深300-看跌
+        </ion-item>
+
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="openCY();"
+                  type="item-text-wrap">创业版-实时
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="openCYk();"
+                  type="item-text-wrap">创业版-日k
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878004();"
+                  type="item-text-wrap">创业版-看涨
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878005();"
+                  type="item-text-wrap">创业版-看跌
+        </ion-item>
+
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open50();"
+                  type="item-text-wrap">上证50-实时
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open50k();"
+                  type="item-text-wrap">上证50-日k
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878006();"
+                  type="item-text-wrap">上证50-看涨
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878007();"
+                  type="item-text-wrap">上证50-看跌
+        </ion-item>
+
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open500();"
+                  type="item-text-wrap">中证500-实时
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open500k();"
+                  type="item-text-wrap">中证500-日k
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878008();"
+                  type="item-text-wrap">中证500-看涨
+        </ion-item>
+        <ion-item class="item-remove-animate item-avatar item-icon-right" ng-click="open_878009();"
+                  type="item-text-wrap">中证500-看跌
+        </ion-item>
+
+      </ion-list>
+    </ion-content>
+  </ion-side-menu>
 </ion-side-menus>
 
 <script id="new-task.html" type="text/ng-template">

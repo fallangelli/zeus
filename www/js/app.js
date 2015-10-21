@@ -12,7 +12,83 @@ todoApp.run(function ($ionicPlatform) {
 });
 
 
-todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Positions, $ionicSideMenuDelegate, $http) {
+todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionSheet, $ionicModal, Positions, $ionicSideMenuDelegate, $http) {
+
+  //300涨
+  $scope.open_878002 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
+  };
+
+  //300跌
+  $scope.open_878003 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
+  };
+
+
+  $scope.open300 = function (code) {
+    window.open("http://image.sinajs.cn/newchart/min/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+  };
+
+  $scope.open300k = function (code) {
+    window.open("http://image.sinajs.cn/newchart/daily/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+  };
+
+
+  //创业涨
+  $scope.open_878004 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
+  };
+
+  //创业跌
+  $scope.open_878005 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
+  };
+
+
+  $scope.openCY = function (code) {
+    window.open("http://image.sinajs.cn/newchart/min/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+  };
+
+  $scope.openCYk = function (code) {
+    window.open("http://image.sinajs.cn/newchart/daily/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+  };
+
+  //50涨
+  $scope.open_878006 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878006", "_blank", "location=no,toolbar=no");
+  };
+
+  //50跌
+  $scope.open_878007 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878007", "_blank", "location=no,toolbar=no");
+  };
+
+  $scope.open50 = function (code) {
+    window.open("http://image.sinajs.cn/newchart/min/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+  };
+
+  $scope.open50k = function (code) {
+    window.open("http://image.sinajs.cn/newchart/daily/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+  };
+
+
+  //500涨
+  $scope.open_878008 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878008", "_blank", "location=no,toolbar=no");
+  };
+
+  //500跌
+  $scope.open_878009 = function (code) {
+    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878009", "_blank", "location=no,toolbar=no");
+  };
+
+  $scope.open500 = function (code) {
+    window.open("http://image.sinajs.cn/newchart/min/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+  };
+
+  $scope.open500k = function (code) {
+    window.open("http://image.sinajs.cn/newchart/daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+  };
 
   $scope.openDayGif = function (code) {
     window.open("http://image.sinajs.cn/newchart/daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
@@ -127,12 +203,12 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
           var atr = position.realATR ? position.realATR : position.initialATR;
 
           if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice2)) {
-            position.realhighStopPrice = position.currPrice - 6 * atr;
+            position.realhighStopPrice = position.currPrice - 4 * atr;
             position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
             position.currHighPriceColor = position.currPriceColor;
           }
           else if (parseFloat(position.highStopPrice2) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice3)) {
-            position.realhighStopPrice = position.currPrice - 4 * atr;
+            position.realhighStopPrice = position.currPrice - 3 * atr;
             position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
             position.currHighPriceColor = position.currPriceColor;
           }
@@ -261,11 +337,14 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicModal, Po
     $scope.taskModal.hide();
   }
 
-  $scope.togglePositions = function () {
+  $scope.toggleLeft = function () {
     $ionicSideMenuDelegate.toggleLeft();
   };
 
 
+  $scope.toggleRight = function () {
+    $ionicSideMenuDelegate.toggleRight();
+  };
 // Try to create the first position, make sure to defer
 // this by using $timeout so everything is initialized
 // properly
