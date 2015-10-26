@@ -1,5 +1,13 @@
 var todoApp = angular.module('todoApp', ['ionic']);
 
+todoApp.config(function ($sceDelegateProvider) {
+  $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // Allow loading from our assets domain.  Notice the difference between * and **.
+    'http://money.finance.sina.com.cn/**']);
+});
+
 todoApp.run(function ($ionicPlatform) {
   $ionicPlatform.ready(function () {
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -11,123 +19,243 @@ todoApp.run(function ($ionicPlatform) {
   });
 });
 
+function getQuarterByMonth(month) {
+  if (month <= 2) {
+    return 1;
+  }
+  else if (month <= 5) {
+    return 2;
+  }
+  else if (month <= 8) {
+    return 3;
+  }
+  else {
+    return 4;
+  }
+}
+
+
+function parseHis(content) {
+  var result = new Object();
+  var tmpStr = new String(content);
+  var tmpStart = tmpStr.indexOf("&date=");
+  tmpStr = tmpStr.substr(tmpStart + 6);
+  result.dateP = tmpStr.substring(0, tmpStr.indexOf("'>"));
+
+  tmpStr = tmpStr.substr(tmpStr.indexOf("'>") + 2);
+  tmpStart = tmpStr.indexOf('align="center">');
+  tmpStr = tmpStr.substr(tmpStart + 15);
+  result.openingP = tmpStr.substring(0, tmpStr.indexOf("</"));
+
+  tmpStr = tmpStr.substr(tmpStr.indexOf("'>") + 2);
+  tmpStart = tmpStr.indexOf('align="center">');
+  tmpStr = tmpStr.substr(tmpStart + 15);
+  result.maxP = tmpStr.substring(0, tmpStr.indexOf("</"));
+
+  tmpStr = tmpStr.substr(tmpStr.indexOf("'>") + 2);
+  tmpStart = tmpStr.indexOf('align="center">');
+  tmpStr = tmpStr.substr(tmpStart + 15);
+  result.closingP = tmpStr.substring(0, tmpStr.indexOf("</"));
+
+  tmpStr = tmpStr.substr(tmpStr.indexOf("'>") + 2);
+  tmpStart = tmpStr.indexOf('align="center">');
+  tmpStr = tmpStr.substr(tmpStart + 15);
+  result.minP = tmpStr.substring(0, tmpStr.indexOf("</"));
+
+  return result;
+}
 
 todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionSheet, $ionicModal, Positions, $ionicSideMenuDelegate, $http) {
 
+
   //300涨
   $scope.open_878002 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
   };
 
   //300跌
   $scope.open_878003 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
   };
 
 
   $scope.open300 = function (code) {
-    window.open("http://image.sinajs.cn/newchart/min/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/min/n/sh000300.gif", "_blank", "location=no,toolbar=no");
   };
 
   $scope.open300k = function (code) {
-    window.open("http://image.sinajs.cn/newchart/daily/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/daily/n/sh000300.gif", "_blank", "location=no,toolbar=no");
   };
 
 
   //创业涨
   $scope.open_878004 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
   };
 
   //创业跌
   $scope.open_878005 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
   };
 
 
   $scope.openCY = function (code) {
-    window.open("http://image.sinajs.cn/newchart/min/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/min/n/sz399006.gif", "_blank", "location=no,toolbar=no");
   };
 
   $scope.openCYk = function (code) {
-    window.open("http://image.sinajs.cn/newchart/daily/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/daily/n/sz399006.gif", "_blank", "location=no,toolbar=no");
   };
 
   //50涨
   $scope.open_878006 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878006", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878006", "_blank", "location=no,toolbar=no");
   };
 
   //50跌
   $scope.open_878007 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878007", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878007", "_blank", "location=no,toolbar=no");
   };
 
   $scope.open50 = function (code) {
-    window.open("http://image.sinajs.cn/newchart/min/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/min/n/sh000016.gif", "_blank", "location=no,toolbar=no");
   };
 
   $scope.open50k = function (code) {
-    window.open("http://image.sinajs.cn/newchart/daily/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/daily/n/sh000016.gif", "_blank", "location=no,toolbar=no");
   };
 
 
   //500涨
   $scope.open_878008 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878008", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878008", "_blank", "location=no,toolbar=no");
   };
 
   //500跌
   $scope.open_878009 = function (code) {
-    window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878009", "_blank", "location=no,toolbar=no");
+    window.open("/gf/match/index_dkgg.jsp?code=878009", "_blank", "location=no,toolbar=no");
   };
 
   $scope.open500 = function (code) {
-    window.open("http://image.sinajs.cn/newchart/min/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/min/n/sh000905.gif", "_blank", "location=no,toolbar=no");
   };
 
   $scope.open500k = function (code) {
-    window.open("http://image.sinajs.cn/newchart/daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
   };
 
   $scope.openDayGif = function (code) {
-    window.open("http://image.sinajs.cn/newchart/daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
   };
 
   $scope.openMinGif = function (code) {
-    window.open("http://image.sinajs.cn/newchart/min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+    window.open("/img/sina/min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
   };
 
-  $scope.updateRealATR = function (position) {
 
-    var allPos = Positions.all();
-    for (var i = 0; i < allPos.length; i++) {
-      if (allPos[i].code == position.code) {
-        allPos[i].realATR = position.realATR;
-        $scope.positions = allPos;
-        Positions.save($scope.positions);
+  $scope.updateHisData = function (position) {
+
+    var numCode = position.code.replace(/[a-zA-Z]+/, '');
+    var now = new Date();
+    var quarter = getQuarterByMonth(now.getMonth());
+    var myUrl = "/remote/his/" + numCode + ".phtml?year=2015&jidu=" + quarter;
+    $http.get(myUrl).success(function (data, status, headers, config) {
+
+      var strExp = "<a target='_blank'\\s+href='http://vip.stock.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php\\?";
+      strExp += "symbol=\\w{8}&date=\\d{4}-\\d{2}-\\d{2}'>\\s*([^\\s]+)\\s+</a>\\s*</div></td>";
+      strExp += "\\s*<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s";
+      var regexp = new RegExp(strExp, "g");
+      var temp = data.match(regexp);
+      for (item in temp) {
+        var pos = Positions.get(position.code);
+        if (typeof( pos.hisData ) == "undefined") {
+          pos.hisData = new Object();
+        }
+        var parseData = parseHis(temp[item]);
+        pos.hisData[parseData.dateP] = parseData;
+        Positions.saveOne(pos);
       }
+    }).
+      error(function (data, status, headers, config) {
+        alert("读取历史信息错误");
+      }
+    );
+
+    var numCode = position.code.replace(/[a-zA-Z]+/, '');
+    var now = new Date();
+    var quarter = getQuarterByMonth(now.getMonth()) - 1;
+    var myUrl = "/remote/his/" + numCode + ".phtml?year=2015&jidu=" + quarter;
+    $http.get(myUrl).success(function (data, status, headers, config) {
+
+      var strExp = "<a target='_blank'\\s+href='http://vip.stock.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php\\?";
+      strExp += "symbol=\\w{8}&date=\\d{4}-\\d{2}-\\d{2}'>\\s*([^\\s]+)\\s+</a>\\s*</div></td>";
+      strExp += "\\s*<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s";
+      var regexp = new RegExp(strExp, "g");
+      var temp = data.match(regexp);
+      for (item in temp) {
+        var pos = Positions.get(position.code);
+        if (typeof( pos.hisData ) == "undefined") {
+          pos.hisData = new Object();
+        }
+        var parseData = parseHis(temp[item]);
+        pos.hisData[parseData.dateP] = parseData;
+        Positions.saveOne(pos);
+      }
+    }).
+      error(function (data, status, headers, config) {
+        alert("读取历史信息错误");
+      }
+    );
+
+    for (var item in position.hisData) {
+
+      //计算tr
+      var temDate = new Date(item);
+      var baseDate = temDate.getFullYear() + "-" + ( temDate.getMonth() + 1) + "-" + (temDate.getDate() < 10 ? '0' + temDate.getDate() : temDate.getDate());
+      var count = 1;
+      do {
+        var tmpDD = new Date(item);
+        tmpDD.setDate(tmpDD.getDate() - count);
+        var lastDate = tmpDD.getFullYear() + "-" + ( tmpDD.getMonth() + 1) + "-" + (tmpDD.getDate() < 10 ? '0' + tmpDD.getDate() : tmpDD.getDate());
+        var itemLastData = position.hisData[lastDate];
+        count = count + 1;
+      } while (typeof(itemLastData) == "undefined" && count < 30);
+
+      if (typeof(itemLastData) == "undefined")
+        break;
+
+      var itemBaseData = position.hisData[baseDate];
+      var tr = Math.max(itemBaseData.maxP - itemBaseData.minP, itemLastData.closingP - itemBaseData.maxP, itemLastData.closingP - itemBaseData.minP);
+
+      itemBaseData['atr'] = tr;
     }
 
 
-    loadRunTimeData(position);
-    fillPosition(position);
-
-    $scope.activePosition = position;
-
-    //window.localStorage['positions'] = angular.toJson(positions);
-
-
-  };
+  }
+  //
+  //$scope.updateRealATR = function (position) {
+  //  this.updateHisData(position);
+  //  Positions.saveOne(position);
+  //
+  //  loadRunTimeData(position);
+  //  fillPosition(position);
+  //
+  //  $scope.activePosition = position;
+  //
+  //  //window.localStorage['positions'] = angular.toJson(positions);
+  //
+  //
+  //};
 
   $scope.refreshAll = function () {
     $timeout(function () {
       var positions = Positions.all();
       for (var i = 0; i < positions.length; i++) {
         loadRunTimeData(positions[i]);
-        fillPosition(positions[i]);
-
+        $scope.updateHisData(positions[i]);
+        $scope.fillPosition(positions[i]);
       }
+
       $scope.positions = positions;
 
       $scope.$broadcast('scroll.refreshComplete');
@@ -143,7 +271,8 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
       var pos = $scope.positions[Positions.getLastActiveIndex()];
 
       loadRunTimeData(pos);
-      fillPosition(pos);
+      $scope.updateHisData(pos);
+      $scope.fillPosition(pos);
 
       $scope.activePosition = pos;
 
@@ -154,7 +283,7 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
 
   var loadRunTimeData = function (position) {
     //var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,14.30,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
-    var myUrl = "http://hq.sinajs.cn/list=" + position.code;
+    var myUrl = "/remote/hq/list=" + position.code;
     $http.get(myUrl).success(function (data, status, headers, config) {
         var temp = data.split(',')[0];
         position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
@@ -200,7 +329,7 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
         position.realhighStopPrice = '无';
         position.currHighPriceColor = {color: 'blue'};
         if (position.currPrice) {
-          var atr = position.realATR ? position.realATR : position.initialATR;
+          var atr = position.currATR ? position.currATR : position.initialATR;
 
           if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice2)) {
             position.realhighStopPrice = position.currPrice - 4 * atr;
@@ -234,6 +363,7 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
       }
     );
 
+
   }
 // A utility function for creating a new position
 // with the given positionCode
@@ -245,6 +375,7 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
     if (positionCode.substr(0, 1) == '0' || positionCode.substr(0, 1) == '3')
       newPosition.code = 'sz' + positionCode;
 
+    newPosition.hisDate = new Object();
 
     $scope.positions.push(newPosition);
     Positions.save($scope.positions);
@@ -277,8 +408,8 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
     var pos = $scope.positions[Positions.getLastActiveIndex()];
 
     loadRunTimeData(pos);
-
-    fillPosition(pos);
+    $scope.updateHisData(pos);
+    $scope.fillPosition(pos);
     $scope.activePosition = pos;
     $ionicSideMenuDelegate.toggleLeft(false);
   };
@@ -292,6 +423,69 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
     $ionicSideMenuDelegate.toggleLeft(false);
   };
 
+
+  $scope.fillPosition = function (position) {
+    if (position) {
+
+      //建议仓位数量
+      position.advicePosition = position.totalFund * position.positionRC / ( position.initialATR * position.stopAM * 100);
+      //建议仓位金额
+      if (position.initialPrice)
+        position.advicePosFund = position.advicePosition * position.initialPrice;
+      else
+        position.advicePosFund = position.advicePosition * position.currPrice;
+      //止损价
+      position.stopPercent = position.stopAM * position.initialATR / position.initialPrice;
+
+      position.stopFund = position.stopPercent * position.initialCount * position.initialPrice;
+
+      position.lowStopPrice = position.initialPrice * (1 - position.stopPercent);
+
+      position.highStopPrice1 = position.initialPrice * (1 + position.stopPercent * 2);
+
+      position.highStopPrice2 = position.initialPrice * (1 + position.stopPercent * 4);
+
+      position.highStopPrice3 = position.initialPrice * (1 + position.stopPercent * 6);
+
+
+      var nowDate = new Date();
+      var index = 15;
+      while (index > 0) {
+
+        //计算tr
+        var currDate = nowDate.getFullYear() + "-" + ( nowDate.getMonth() + 1) + "-" + (nowDate.getDate() < 10 ? '0' + nowDate.getDate() : nowDate.getDate());
+        var count = 1;
+        do {
+          var tmpDD = new Date();
+          tmpDD.setDate(tmpDD.getDate() - count);
+          var lastDate = tmpDD.getFullYear() + "-" + ( tmpDD.getMonth() + 1) + "-" + (tmpDD.getDate() < 10 ? '0' + tmpDD.getDate() : tmpDD.getDate());
+          var itemLastData = position.hisData[lastDate];
+          count = count + 1;
+        } while (typeof(itemLastData) == "undefined" && count < 30);
+
+        if (typeof(itemLastData) == "undefined")
+          continue;
+
+        var itemBaseData = position.hisData[baseDate];
+        var tr = Math.max(itemBaseData.maxP - itemBaseData.minP, itemLastData.closingP - itemBaseData.maxP, itemLastData.closingP - itemBaseData.minP);
+
+        itemBaseData['atr'] = tr;
+      }
+
+      position.currATR = tr;
+
+      position.advicePosition = position.advicePosition.toFixed(0);
+      position.advicePosFund = position.advicePosFund.toFixed(2);
+      position.lowStopPrice = position.lowStopPrice.toFixed(2);
+      position.stopFund = position.stopFund.toFixed(2);
+      position.stopPercent = position.stopPercent.toFixed(3);
+      position.highStopPrice1 = position.highStopPrice1.toFixed(2);
+      position.highStopPrice2 = position.highStopPrice2.toFixed(2);
+      position.highStopPrice3 = position.highStopPrice3.toFixed(2);
+
+      Positions.saveOne(position);
+    }
+  }
 // Create our modal
   $ionicModal.fromTemplateUrl('new-task.html', function (modal) {
     $scope.taskModal = modal;
@@ -307,12 +501,12 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
     $scope.activePosition.totalFund = position.totalFund;
     $scope.activePosition.initialCount = position.initialCount;
     $scope.activePosition.initialPrice = position.initialPrice;
-    $scope.activePosition.initialATR = position.initialATR;
+    $scope.activePosition.initialATR = position.currATR;
     $scope.activePosition.positionRC = position.positionRC;
     $scope.activePosition.stopAM = position.stopAM;
 
     loadRunTimeData($scope.activePosition);
-    fillPosition($scope.activePosition);
+    $scope.fillPosition($scope.activePosition);
     //
     //$scope.activePosition.tasks.push({
     //  totalFund: task.totalFund,
@@ -363,58 +557,41 @@ todoApp.controller('TodoController', function ($scope, $timeout, $ionicActionShe
 })
 ;
 
-function fillPosition(position) {
-  if (position) {
-
-    //建议仓位数量
-    position.advicePosition = position.totalFund * position.positionRC / ( position.initialATR * position.stopAM * 100);
-    //建议仓位金额
-    if (position.initialPrice)
-      position.advicePosFund = position.advicePosition * position.initialPrice;
-    else
-      position.advicePosFund = position.advicePosition * position.currPrice;
-    //止损价
-    position.stopPercent = position.stopAM * position.initialATR / position.initialPrice;
-
-    position.stopFund = position.stopPercent * position.initialCount * position.initialPrice;
-
-    position.lowStopPrice = position.initialPrice * (1 - position.stopPercent);
-
-    position.highStopPrice1 = position.initialPrice * (1 + position.stopPercent * 2);
-
-    position.highStopPrice2 = position.initialPrice * (1 + position.stopPercent * 4);
-
-    position.highStopPrice3 = position.initialPrice * (1 + position.stopPercent * 6);
-
-
-    position.advicePosition = position.advicePosition.toFixed(0);
-    position.advicePosFund = position.advicePosFund.toFixed(2);
-    position.lowStopPrice = position.lowStopPrice.toFixed(2);
-    position.stopFund = position.stopFund.toFixed(2);
-    position.stopPercent = position.stopPercent.toFixed(3);
-    position.highStopPrice1 = position.highStopPrice1.toFixed(2);
-    position.highStopPrice2 = position.highStopPrice2.toFixed(2);
-    position.highStopPrice3 = position.highStopPrice3.toFixed(2);
-  }
-}
-
 todoApp.factory('Positions', function () {
   return {
     all: function () {
       var positionString = window.localStorage['positions'];
       if (positionString) {
         var pos = angular.fromJson(positionString);
-        //for (var i = 0; i < pos.length; i++) {
-        //  fillPosition(pos[i]);
-        //}
 
         return pos;
       }
       return [];
     },
+    get: function (code) {
+      var positionString = window.localStorage['positions'];
+      if (positionString) {
+        var pos = angular.fromJson(positionString);
+        for (var i = 0; i < pos.length; i++) {
+          if (pos[i].code == code) {
+            return pos[i];
+          }
+        }
+        return null;
+      }
+      return [];
+    },
+    saveOne: function (position) {
+      var allPos = this.all();
+      for (var i = 0; i < allPos.length; i++) {
+        if (allPos[i].code == position.code) {
+          allPos[i] = position;
+          this.save(allPos);
+        }
+      }
+    },
     save: function (positions) {
       window.localStorage['positions'] = angular.toJson(positions);
-
     }
     ,
     newPosition: function (positionCode) {

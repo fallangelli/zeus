@@ -55,7 +55,6 @@
 
       <div class="item">
 
-
         <button class="button item-button-left"
                 ng-click="newTask()">参数维护
         </button>
@@ -69,12 +68,6 @@
 
       </div>
 
-      <form ng-submit="updateRealATR(activePosition)">
-        <label class="item item-input">最新ATR:
-          <input type="text" placeholder="计算止盈价，不填则按买入时atr计算" ng-model="activePosition.realATR">
-          <span><button type="submit" class="button button-positive">更新</button></span>
-        </label>
-      </form>
 
       <ion-list>
         <ion-item>
@@ -91,7 +84,7 @@
           </li>
 
           <li ng-style="activePosition.currHighPriceColor">
-            最新止盈价：{{activePosition.realhighStopPrice}}
+            最新止盈价：{{activePosition.realhighStopPrice}} (atr：{{activePosition.currATR}})
           </li>
 
           <li>今开：{{activePosition.todayStart}} 昨收：{{activePosition.yestodayEnd}}</li>
@@ -171,7 +164,7 @@
 
 
           <p ng-style="position.currHighPriceColor">
-            最新止盈价：{{position.realhighStopPrice}}
+            最新止盈价：{{position.realhighStopPrice}} (atr：{{position.currAtr}})
           </p>
 
           <p>
@@ -288,7 +281,7 @@
           <label class="item item-input">
             <span class="input-label">建仓ATR-21 :</span>
 
-            <input type="text" placeholder="计算推荐仓位、止损线" ng-model="activePosition.initialATR">
+            <input type="text" placeholder="计算推荐仓位、止损线" ng-model="activePosition.currATR">
           </label>
           <label class="item item-input">
             <span class="input-label">止损振幅倍数 :</span>
