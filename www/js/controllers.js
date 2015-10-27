@@ -3,7 +3,7 @@ angular.module('zeus.controllers', [])
 
   .controller('TodoController', function ($scope, $q, $timeout, $ionicActionSheet, $ionicModal, Positions, HisData, $ionicSideMenuDelegate, $http) {
 
-    $scope.updateHisData = function (position) {
+    $scope.updateHisData = function (position, index) {
       var numCode = position.code.replace(/[a-zA-Z]+/, '');
 
       var now = new Date();
@@ -33,7 +33,7 @@ angular.module('zeus.controllers', [])
               hisData[hisData.length] = res[item];
             }
             position.hisData = hisData;
-            Positions.saveOne(position);
+            Positions.saveOne(position, index);
 
             if (quarter > 1) {
               quarter = quarter - 1;
@@ -49,7 +49,7 @@ angular.module('zeus.controllers', [])
                 hisData[hisData.length] = res[item];
               }
               position.hisData = hisData;
-              Positions.saveOne(position);
+              Positions.saveOne(position, index);
             });
           });
         }
@@ -60,86 +60,86 @@ angular.module('zeus.controllers', [])
 
 //300涨
     $scope.open_878002 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
     };
 
 //300跌
     $scope.open_878003 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
     };
 
 
     $scope.open300 = function (code) {
-      window.open("/img/sina/min/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/min/n/sh000300.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open300k = function (code) {
-      window.open("/img/sina/daily/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/daily/n/sh000300.gif", "_blank", "location=no,toolbar=no");
     };
 
 
 //创业涨
     $scope.open_878004 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
     };
 
 //创业跌
     $scope.open_878005 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
     };
 
 
     $scope.openCY = function (code) {
-      window.open("/img/sina/min/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/min/n/sz399006.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.openCYk = function (code) {
-      window.open("/img/sina/daily/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/daily/n/sz399006.gif", "_blank", "location=no,toolbar=no");
     };
 
 //50涨
     $scope.open_878006 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878006", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878006", "_blank", "location=no,toolbar=no");
     };
 
 //50跌
     $scope.open_878007 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878007", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878007", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open50 = function (code) {
-      window.open("/img/sina/min/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/min/n/sh000016.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open50k = function (code) {
-      window.open("/img/sina/daily/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/daily/n/sh000016.gif", "_blank", "location=no,toolbar=no");
     };
 
 
 //500涨
     $scope.open_878008 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878008", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878008", "_blank", "location=no,toolbar=no");
     };
 
 //500跌
     $scope.open_878009 = function (code) {
-      window.open("/gf/match/index_dkgg.jsp?code=878009", "_blank", "location=no,toolbar=no");
+      window.open("http://www.gf.com.cn/match/nxsy/index_dkgg.jsp?code=878009", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open500 = function (code) {
-      window.open("/img/sina/min/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/min/n/sh000905.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open500k = function (code) {
-      window.open("/img/sina/daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.openDayGif = function (code) {
-      window.open("/img/sina/daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.openMinGif = function (code) {
-      window.open("/img/sina/min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+      window.open("http://image.sinajs.cn/newchart/min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
     };
 
 
@@ -148,8 +148,8 @@ angular.module('zeus.controllers', [])
         var positions = Positions.all();
         for (var i = 0; i < positions.length; i++) {
           loadRunTimeData(positions[i]);
-          $scope.updateHisData(positions[i]);
-          $scope.fillPosition(positions[i]);
+          $scope.updateHisData(positions[i], i);
+          $scope.fillPosition(positions[i], i);
         }
 
         $scope.positions = positions;
@@ -166,8 +166,8 @@ angular.module('zeus.controllers', [])
         var pos = $scope.positions[Positions.getLastActiveIndex()];
 
         loadRunTimeData(pos);
-        $scope.updateHisData(pos);
-        $scope.fillPosition(pos);
+        $scope.updateHisData(pos, Positions.getLastActiveIndex());
+        $scope.fillPosition(pos, Positions.getLastActiveIndex());
 
         $scope.activePosition = pos;
 
@@ -194,7 +194,7 @@ angular.module('zeus.controllers', [])
 
     var loadRunTimeData = function (position) {
       //var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,14.30,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
-      var myUrl = "/remote/hq/list=" + position.code;
+      var myUrl = "http://hq.sinajs.cn/list=" + position.code;
       $http.get(myUrl).success(function (data, status, headers, config) {
           var temp = data.split(',')[0];
           position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
@@ -286,10 +286,11 @@ angular.module('zeus.controllers', [])
       if (positionCode.substr(0, 1) == '0' || positionCode.substr(0, 1) == '3')
         newPosition.code = 'sz' + positionCode;
 
-      $scope.updateHisData(newPosition);
-
       $scope.positions.push(newPosition);
+
       Positions.save($scope.positions);
+      $scope.updateHisData(newPosition, $scope.positions.length - 1);
+
       $scope.selectPosition(newPosition, $scope.positions.length - 1);
     }
 
@@ -319,8 +320,8 @@ angular.module('zeus.controllers', [])
       var pos = $scope.positions[Positions.getLastActiveIndex()];
 
       loadRunTimeData(pos);
-      $scope.updateHisData(pos);
-      $scope.fillPosition(pos);
+      $scope.updateHisData(pos, Positions.getLastActiveIndex());
+      $scope.fillPosition(pos, Positions.getLastActiveIndex());
       $scope.activePosition = pos;
       $ionicSideMenuDelegate.toggleLeft(false);
     };
@@ -335,7 +336,7 @@ angular.module('zeus.controllers', [])
     };
 
 
-    $scope.fillPosition = function (position) {
+    $scope.fillPosition = function (position, index) {
       if (position) {
 
         //建议仓位数量
@@ -392,7 +393,7 @@ angular.module('zeus.controllers', [])
         position.highStopPrice2 = position.highStopPrice2.toFixed(2);
         position.highStopPrice3 = position.highStopPrice3.toFixed(2);
 
-        Positions.saveOne(position);
+        Positions.saveOne(position, index);
       }
     }
 // Create our modal
@@ -415,8 +416,8 @@ angular.module('zeus.controllers', [])
       $scope.activePosition.stopAM = position.stopAM;
 
       loadRunTimeData($scope.activePosition);
-      $scope.updateHisData($scope.activePosition);
-      $scope.fillPosition($scope.activePosition);
+      $scope.updateHisData($scope.activePosition, Positions.getLastActiveIndex());
+      $scope.fillPosition($scope.activePosition, Positions.getLastActiveIndex());
 
       $scope.taskModal.hide();
 

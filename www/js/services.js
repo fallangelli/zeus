@@ -24,14 +24,10 @@ angular.module('zeus.services', [])
         }
         return [];
       },
-      saveOne: function (position) {
+      saveOne: function (position, index) {
         var allPos = this.all();
-        for (var i = 0; i < allPos.length; i++) {
-          if (allPos[i].code == position.code) {
-            allPos[i] = position;
-            this.save(allPos);
-          }
-        }
+        allPos[index] = position;
+        this.save(allPos);
       },
       save: function (positions) {
         window.localStorage['positions'] = angular.toJson(positions);
@@ -80,7 +76,7 @@ angular.module('zeus.services', [])
 
       query: function (numCode, year, quarter) {
         var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
-        var myUrl = "/remote/his/" + numCode + ".phtml?year=" + year + "&jidu=" + quarter;
+        var myUrl = "http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/" + numCode + ".phtml?year=" + year + "&jidu=" + quarter;
         $http({method: 'GET', url: myUrl}).
           success(function (data, status, headers, config) {
             var strExp = "<a target='_blank'\\s+href='http://vip.stock.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php\\?";
