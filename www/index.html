@@ -21,8 +21,12 @@
   <!-- your app's js -->
   <script src="js/app.js"></script>
 
+
+  <script src="js/controllers.js"></script>
+
+  <script src="js/services.js"></script>
 </head>
-<body ng-app="todoApp" ng-controller="TodoController" ng-cloak>
+<body ng-app="zeus" ng-controller="TodoController" ng-cloak>
 
 <ion-side-menus>
 
@@ -98,11 +102,11 @@
 
 
         <ion-item>
-          <p style="color:palevioletred">第一止盈（4*atr）：{{activePosition.highStopPrice1}}元</p>
+          <p style="color:palevioletred">第一止盈（4*ATR）：{{activePosition.highStopPrice1}}元</p>
 
-          <p style="color:darkred">第二止盈（3*atr）：{{activePosition.highStopPrice2}}元</p>
+          <p style="color:darkred">第二止盈（3*ATR）：{{activePosition.highStopPrice2}}元</p>
 
-          <p style="color:red">第三止盈（2*atr）：{{activePosition.highStopPrice3}}元</p>
+          <p style="color:red">第三止盈（2*ATR）：{{activePosition.highStopPrice3}}元</p>
         </ion-item>
 
         <ion-item>
@@ -119,7 +123,7 @@
         <ion-item>
           <h2 style="color:blue">买入前参数 —— </h2>
           <li>总资金：{{activePosition.totalFund}}元</li>
-          <li>建仓ATR-21：{{activePosition.initialATR}}</li>
+          <li>建仓ATR-14：{{activePosition.initialATR}}</li>
           <li>仓位风险系数：{{activePosition.positionRC}}%</li>
           <li>止损振幅倍数： {{activePosition.stopAM}}</li>
         </ion-item>
@@ -164,7 +168,7 @@
 
 
           <p ng-style="position.currHighPriceColor">
-            最新止盈价：{{position.realhighStopPrice}} (atr:{{position.currAtr}})
+            最新止盈价：{{position.realhighStopPrice}} (ATR-14:{{position.currAtr}})
           </p>
 
           <p>
@@ -279,7 +283,7 @@
             <input type="text" placeholder="计算推荐仓位" ng-model="activePosition.positionRC">
           </label>
           <label class="item item-input">
-            <span class="input-label">建仓ATR-21 :</span>
+            <span class="input-label">建仓ATR-14 :</span>
 
             <input type="text" placeholder="计算推荐仓位、止损线" ng-model="activePosition.currATR">
           </label>
