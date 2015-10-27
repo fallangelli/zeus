@@ -233,27 +233,6 @@ angular.module('zeus.controllers', [])
               position.currPriceColor = {color: 'red'};
           }
 
-          position.realhighStopPrice = '无';
-          position.currHighPriceColor = {color: 'blue'};
-          if (position.currPrice) {
-            var atr = position.currATR ? position.currATR : position.initialATR;
-
-            if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice2)) {
-              position.realhighStopPrice = position.currPrice - 4 * atr;
-              position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
-              position.currHighPriceColor = position.currPriceColor;
-            }
-            else if (parseFloat(position.highStopPrice2) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice3)) {
-              position.realhighStopPrice = position.currPrice - 3 * atr;
-              position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
-              position.currHighPriceColor = position.currPriceColor;
-            }
-            else if (parseFloat(position.highStopPrice3) <= parseFloat(position.currPrice)) {
-              position.realhighStopPrice = position.currPrice - 2 * atr;
-              position.realhighStopPrice = position.realhighStopPrice.toFixed(2);
-              position.currHighPriceColor = position.currPriceColor;
-            }
-          }
 
           if (position.currPrice && position.initialPrice && position.initialCount) {
             position.currChangePercent = (position.currPrice - position.initialPrice) * 100 / position.initialPrice;
@@ -353,6 +332,41 @@ angular.module('zeus.controllers', [])
         position.highStopPrice2 = position.initialPrice * (1 + position.stopPercent * 4);
 
         position.highStopPrice3 = position.initialPrice * (1 + position.stopPercent * 6);
+
+        if (position.realhighStopPrice == null)
+          position.realhighStopPrice = 0;
+        position.currHighPriceColor = {color: 'blue'};
+        if (position.currPrice) {
+          var atr = position.currATR ? position.currATR : position.initialATR;
+          var tmpHighPrice = -1;
+          if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) &&
+            parseFloat(position.currPrice) < parseFloat(position.highStopPrice2)) {
+            tmpHighPrice = position.currPrice - 4 * atr;
+            tmpHighPrice = tmpHighPrice.toFixed(3);
+            if (tmpHighPrice >= position.realhighStopPrice) {
+              position.realhighStopPrice = tmpHighPrice;
+              position.currHighPriceColor = position.currPriceColor;
+            }
+          }
+          else if (parseFloat(position.highStopPrice2) <= parseFloat(position.currPrice) &&
+            parseFloat(position.currPrice) < parseFloat(position.highStopPrice3)) {
+            tmpHighPrice = position.currPrice - 3 * atr;
+            tmpHighPrice = tmpHighPrice.toFixed(3);
+            if (tmpHighPrice >= position.realhighStopPrice) {
+              position.realhighStopPrice = tmpHighPrice;
+              position.currHighPriceColor = position.currPriceColor;
+            }
+
+          }
+          else if (parseFloat(position.highStopPrice3) <= parseFloat(position.currPrice)) {
+            tmpHighPrice = position.currPrice - 2 * atr;
+            tmpHighPrice = tmpHighPrice.toFixed(3);
+            if (tmpHighPrice >= position.realhighStopPrice) {
+              position.realhighStopPrice = tmpHighPrice;
+              position.currHighPriceColor = position.currPriceColor;
+            }
+          }
+        }
 
         //计算tr
         if (position.hisData && position.hisData.length > 0) {
