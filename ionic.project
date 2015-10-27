@@ -1,4 +1,17 @@
 {
   "name": "zeus",
-  "app_id": ""
+  "app_id": "",
+  "proxies": [{
+       "path": "/his_data/",
+       "proxyUrl": "http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/"
+    },{
+       "path": "/real_hq/",
+       "proxyUrl": "http://hq.sinajs.cn/"
+    },{
+       "path": "/gf/",
+       "proxyUrl": "http://www.gf.com.cn/match/nxsy/"
+    },{
+       "path": "/img_sina/",
+       "proxyUrl": "http://image.sinajs.cn/newchart/"
+    }]
 }
