@@ -209,6 +209,7 @@ angular.module('zeus.controllers', [])
           position.todayStart = data.split(',')[1];
           position.yestodayEnd = data.split(',')[2];
           position.currPrice = data.split(',')[3];
+          position.currPrice = 44;
           position.currMount = position.currPrice * position.initialCount;
           position.currMount = position.currMount.toFixed(2);
 
@@ -359,25 +360,26 @@ angular.module('zeus.controllers', [])
         if (position.realhighStopPrice == null)
           position.realhighStopPrice = 0;
         position.currHighPriceColor = {color: 'blue'};
+
         if (position.currPrice) {
           var atr = position.currATR ? position.currATR : position.initialATR;
           var tmpHighPrice = -1;
           if (parseFloat(position.highStopPrice1) <= parseFloat(position.highestPrice) &&
             parseFloat(position.highestPrice) < parseFloat(position.highStopPrice2)) {
-            tmpHighPrice = position.highestPrice - 4 * atr;
+            tmpHighPrice = position.highestPrice - 0.5 * position.stopAM * atr;
             tmpHighPrice = tmpHighPrice.toFixed(3);
             position.realhighStopPrice = tmpHighPrice;
             position.currHighPriceColor = position.currPriceColor;
           }
           else if (parseFloat(position.highStopPrice2) <= parseFloat(position.highestPrice) &&
             parseFloat(position.highestPrice) < parseFloat(position.highStopPrice3)) {
-            tmpHighPrice = position.highestPrice - 3 * atr;
+            tmpHighPrice = position.highestPrice - 0.4 * position.stopAM * atr;
             tmpHighPrice = tmpHighPrice.toFixed(3);
             position.realhighStopPrice = tmpHighPrice;
             position.currHighPriceColor = position.currPriceColor;
           }
           else if (parseFloat(position.highStopPrice3) <= parseFloat(position.highestPrice)) {
-            tmpHighPrice = position.highestPrice - 2 * atr;
+            tmpHighPrice = position.highestPrice - 0.3 * position.stopAM * atr;
             tmpHighPrice = tmpHighPrice.toFixed(3);
             position.realhighStopPrice = tmpHighPrice;
             position.currHighPriceColor = position.currPriceColor;

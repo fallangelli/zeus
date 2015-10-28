@@ -81,6 +81,7 @@
 
 
       <ion-list>
+
         <ion-item>
           <h2 style="color:lightblue">实时信息 —— </h2>
 
@@ -107,8 +108,8 @@
         </ion-item>
 
         <ion-item>
-          <p stylolor:darkgreen">止损：{{activePosition.lowStopPrice}}元 ( R =
-          {{activePosition.stopFund}})</p>
+          <p style="color:darkgreen">止损：{{activePosition.lowStopPrice}}元 ( R =
+            {{activePosition.stopFund}})</p>
         </ion-item>
 
 
@@ -188,7 +189,7 @@
           </p>
 
           <p>
-            <b stylelor: darkgreen">{{position.lowStopPrice}}</b>
+            <b style="color: darkgreen">{{position.lowStopPrice}}</b>
 
             <b style="color:palevioletred">{{position.highStopPrice1}}</b>
 
@@ -274,7 +275,7 @@
 </ion-side-menus>
 
 <script id="new-task.html" type="text/ng-template">
-  <div class="modal">
+  <div class="modal" style="width: 90%;left:5%;height: 70%">
 
     <!-- Modal header bar -->
     <ion-header-bar class="bar-secondary">
@@ -285,28 +286,32 @@
     <!-- Modal content area -->
     <ion-content>
 
-      <form ng-submit="createTask(activePosition)">
+      <form name="taskForm" ng-submit="createTask(activePosition)">
         <p style="color:dimgrey">买入前参数</p>
 
         <div class="list">
           <label class="item item-input">
             <span class="input-label">总资金 :</span>
-            <input type="text" placeholder="计算推荐仓位" ng-model="activePosition.totalFund">
+            <input name="totalFund" type="number" step="1000" placeholder="计算推荐仓位" ng-model="activePosition.totalFund">
+            <small class="error" style="color: red" ng-show="taskForm.totalFund.$invalid">1000倍数</small>
+
           </label>
           <label class="item item-input">
-            <span class="input-label">仓位风险系数（%） :</span>
+            <span class="input-label">仓位风险系数(%) :</span>
+            <input name="posRC" type="number" step="0.01" placeholder="计算推荐仓位" ng-model="activePosition.positionRC">
+            <small class="error" style="color: red" ng-show="taskForm.posRC.$invalid">最多2位小数</small>
 
-            <input type="text" placeholder="计算推荐仓位" ng-model="activePosition.positionRC">
           </label>
           <label class="item item-input">
             <span class="input-label">建仓ATR-14 :</span>
-
-            <input type="text" placeholder="计算推荐仓位、止损线(刷新自动读取)" ng-model="activePosition.currATR">
+            <input type="text" readonly placeholder="计算推荐仓位、止损线(刷新自动读取)" ng-model="activePosition.currATR">
           </label>
           <label class="item item-input">
             <span class="input-label">止损振幅倍数 :</span>
+            <input name="stopAM" type="number" step="0.1" placeholder="计算仓位、止损线，推荐2.3~3"
+                   ng-model="activePosition.stopAM">
+            <small class="error" style="color: red" ng-show="taskForm.stopAM.$invalid">最多1位小数</small>
 
-            <input type="text" placeholder="计算仓位、止损线，推荐2.3~3" ng-model="activePosition.stopAM">
           </label>
 
         </div>
@@ -315,11 +320,13 @@
         <div class="list">
           <label class="item item-input">
             <span class="input-label">买入价 :</span>
-            <input type="text" placeholder="买入价" ng-model="activePosition.initialPrice">
+            <input name="initPrcie" type="number" step="0.001" placeholder="买入价" ng-model="activePosition.initialPrice">
+            <small class="error" style="color: red" ng-show="taskForm.initPrcie.$invalid">最多3位小数</small>
           </label>
           <label class="item item-input">
             <span class="input-label">买入数量 :</span>
-            <input type="text" placeholder="买入数量" ng-model="activePosition.initialCount">
+            <input name="initCount" type="number" step="100" placeholder="买入数量" ng-model="activePosition.initialCount">
+            <small class="error" style="color: red" ng-show="taskForm.initCount.$invalid">100的倍数</small>
           </label>
 
         </div>
