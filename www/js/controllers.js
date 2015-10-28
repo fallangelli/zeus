@@ -220,7 +220,7 @@ angular.module('zeus.controllers', [])
           position.currPriceColor = {color: 'blue'};
           if (position.currPrice) {
             if (parseFloat(position.currPrice) < parseFloat(position.lowStopPrice))
-              position.currPriceColor = {color: 'green'};
+              position.currPriceColor = {color: 'black', background: 'greenyellow'};
             else if (parseFloat(position.lowStopPrice) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.initialPrice))
               position.currPriceColor = {color: 'darkgreen'};
             else if (parseFloat(position.initialPrice) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice1))
@@ -451,10 +451,12 @@ angular.module('zeus.controllers', [])
       $scope.updateHisData($scope.activePosition, Positions.getLastActiveIndex());
       $scope.fillPosition($scope.activePosition, Positions.getLastActiveIndex());
 
-      $scope.taskModal.hide();
 
       // Inefficient, but save all the positions
       Positions.save($scope.positions);
+
+      $scope.taskModal.hide();
+
 
     };
 
