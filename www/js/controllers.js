@@ -65,11 +65,11 @@ angular.module('zeus.controllers', [])
 
 
     $scope.open300 = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/min/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "min/n/sh000300.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open300k = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/daily/n/sh000300.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "daily/n/sh000300.gif", "_blank", "location=no,toolbar=no");
     };
 
 
@@ -85,11 +85,11 @@ angular.module('zeus.controllers', [])
 
 
     $scope.openCY = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/min/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "min/n/sz399006.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.openCYk = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/daily/n/sz399006.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "daily/n/sz399006.gif", "_blank", "location=no,toolbar=no");
     };
 
 //50涨
@@ -103,11 +103,11 @@ angular.module('zeus.controllers', [])
     };
 
     $scope.open50 = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/min/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "min/n/sh000016.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open50k = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/daily/n/sh000016.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "daily/n/sh000016.gif", "_blank", "location=no,toolbar=no");
     };
 
 
@@ -122,19 +122,19 @@ angular.module('zeus.controllers', [])
     };
 
     $scope.open500 = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/min/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "min/n/sh000905.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open500k = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.openDayGif = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
     };
 
     $scope.openMinGif = function (code) {
-      window.open(ApiEndpoint.img_url + "newchart/min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+      window.open(ApiEndpoint.img_url + "min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
     };
 
 
@@ -268,7 +268,19 @@ angular.module('zeus.controllers', [])
       $scope.selectPosition(newPosition, $scope.positions.length - 1);
     }
 
-
+    var setHighestPrice = function (position) {
+      var highestPrice = position.currPrice;
+      var strDate = position.initDate.toString();
+      var initDate = new Date(strDate.substring(0, 10).replace(/-/, "/"));
+      for (item in position.hisData) {
+        var itemDate = new Date(position.hisData[item].dateP.replace(/-/, "/"));
+        if (itemDate < initDate)
+          break;
+        if (position.hisData[item].maxP > highestPrice)
+          highestPrice = position.hisData[item].maxP;
+      }
+      position.highestPrice = highestPrice;
+    }
 // Load or initialize positions
     $scope.positions = Positions.all();
 
@@ -339,32 +351,25 @@ angular.module('zeus.controllers', [])
         if (position.currPrice) {
           var atr = position.currATR ? position.currATR : position.initialATR;
           var tmpHighPrice = -1;
-          if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) &&
-            parseFloat(position.currPrice) < parseFloat(position.highStopPrice2)) {
-            tmpHighPrice = position.currPrice - 4 * atr;
+          if (parseFloat(position.highStopPrice1) <= parseFloat(position.highestPrice) &&
+            parseFloat(position.highestPrice) < parseFloat(position.highStopPrice2)) {
+            tmpHighPrice = position.highestPrice - 4 * atr;
             tmpHighPrice = tmpHighPrice.toFixed(3);
-            if (tmpHighPrice >= position.realhighStopPrice) {
-              position.realhighStopPrice = tmpHighPrice;
-              position.currHighPriceColor = position.currPriceColor;
-            }
+            position.realhighStopPrice = tmpHighPrice;
+            position.currHighPriceColor = position.currPriceColor;
           }
-          else if (parseFloat(position.highStopPrice2) <= parseFloat(position.currPrice) &&
-            parseFloat(position.currPrice) < parseFloat(position.highStopPrice3)) {
-            tmpHighPrice = position.currPrice - 3 * atr;
+          else if (parseFloat(position.highStopPrice2) <= parseFloat(position.highestPrice) &&
+            parseFloat(position.highestPrice) < parseFloat(position.highStopPrice3)) {
+            tmpHighPrice = position.highestPrice - 3 * atr;
             tmpHighPrice = tmpHighPrice.toFixed(3);
-            if (tmpHighPrice >= position.realhighStopPrice) {
-              position.realhighStopPrice = tmpHighPrice;
-              position.currHighPriceColor = position.currPriceColor;
-            }
-
+            position.realhighStopPrice = tmpHighPrice;
+            position.currHighPriceColor = position.currPriceColor;
           }
-          else if (parseFloat(position.highStopPrice3) <= parseFloat(position.currPrice)) {
-            tmpHighPrice = position.currPrice - 2 * atr;
+          else if (parseFloat(position.highStopPrice3) <= parseFloat(position.highestPrice)) {
+            tmpHighPrice = position.highestPrice - 2 * atr;
             tmpHighPrice = tmpHighPrice.toFixed(3);
-            if (tmpHighPrice >= position.realhighStopPrice) {
-              position.realhighStopPrice = tmpHighPrice;
-              position.currHighPriceColor = position.currPriceColor;
-            }
+            position.realhighStopPrice = tmpHighPrice;
+            position.currHighPriceColor = position.currPriceColor;
           }
         }
 
@@ -392,16 +397,22 @@ angular.module('zeus.controllers', [])
             if (position.hisData[position.hisData.length - 1 - iCount])
               sumTR += position.hisData[position.hisData.length - 1 - iCount].tr;
           }
-          position.hisData[position.hisData.length - 14]['atr'] = parseFloat(sumTR) / 14;
+          if (position.hisData[position.hisData.length - 14])
+            position.hisData[position.hisData.length - 14]['atr'] = parseFloat(sumTR) / 14;
 
           for (var atrCount = position.hisData.length - 15; atrCount >= 0; atrCount--) {
+            if (!position.hisData[atrCount + 1]['atr'] || !position.hisData[atrCount]['tr'])
+              break;
             var lastATR = parseFloat(position.hisData[atrCount + 1]['atr']);
             var currTR = parseFloat(position.hisData[atrCount]['tr']);
             var currATR = (lastATR * 13 + currTR) / 14;
             position.hisData[atrCount]['atr'] = currATR
           }
-          position.currATR = position.hisData[0]['atr'];
-          position.currATR = position.currATR.toFixed(3);
+          if (position.hisData[0]['atr']) {
+            position.currATR = position.hisData[0]['atr'];
+            position.currATR = position.currATR.toFixed(3);
+          }
+          setHighestPrice(position);
         }
 
 

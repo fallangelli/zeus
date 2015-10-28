@@ -66,7 +66,8 @@ angular.module('zeus.services', [])
       newPosition: function (positionCode) {
         // Add a new position
         return {
-          code: positionCode
+          code: positionCode,
+          initDate: new Date()
         };
       }
       ,
