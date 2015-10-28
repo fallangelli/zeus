@@ -130,13 +130,24 @@ angular.module('zeus.controllers', [])
     };
 
     $scope.openDayGif = function (code) {
-      window.open(ApiEndpoint.img_url + "daily/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+      var imgsrc = ApiEndpoint.img_url + "daily/n/" + code + ".gif";
+      $scope.showBigImage(imgsrc);
     };
 
     $scope.openMinGif = function (code) {
-      window.open(ApiEndpoint.img_url + "min/n/" + code + ".gif", "_blank", "location=no,toolbar=no");
+      var imgsrc = ApiEndpoint.img_url + "min/n/" + code + ".gif"
+      $scope.showBigImage(imgsrc);
     };
 
+    $scope.bigImage = false;    //初始默认大图是隐藏的
+    $scope.hideBigImage = function () {
+      $scope.bigImage = false;
+    };
+
+    $scope.showBigImage = function (imageName) {  //传递一个参数（图片的URl）
+      $scope.bigImageUrl = imageName;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
+      $scope.bigImage = true;                   //显示大图
+    };
 
     $scope.refreshAll = function () {
       $timeout(function () {
