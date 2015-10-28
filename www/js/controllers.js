@@ -11,6 +11,16 @@ angular.module('zeus.controllers', [])
 
       var hisData = new Array();
       HisData.query(numCode, year, quarter).then(function (res) {
+          var oriDateP = position.hisData[0].dateP;
+          var oriDate = new Date(oriDateP.replace(/-/, "/"));
+          var newDateP = res[0].dateP;
+          var newDate = new Date(newDateP.replace(/-/, "/"));
+          if (oriDate.getTime() == newDate.getTime()) {
+            $scope.$broadcast('scroll.refreshComplete');
+            return;
+          }
+
+
           for (item in res) {
             hisData[item] = res[item];
           }
@@ -44,9 +54,15 @@ angular.module('zeus.controllers', [])
               }
               position.hisData = hisData;
               Positions.saveOne(position, index);
-
+              $scope.$broadcast('scroll.refreshComplete');
+            }, function () {
+              $scope.$broadcast('scroll.refreshComplete');
             });
+          }, function () {
+            $scope.$broadcast('scroll.refreshComplete');
           });
+        }, function () {
+          $scope.$broadcast('scroll.refreshComplete');
         }
       )
       ;
@@ -160,7 +176,7 @@ angular.module('zeus.controllers', [])
 
         $scope.positions = positions;
 
-        $scope.$broadcast('scroll.refreshComplete');
+
       }, 500);
 
     };
@@ -178,7 +194,6 @@ angular.module('zeus.controllers', [])
 
         $scope.activePosition = pos;
 
-        $scope.$broadcast('scroll.refreshComplete');
       }, 500);
 
     };
@@ -209,7 +224,8 @@ angular.module('zeus.controllers', [])
           position.todayStart = data.split(',')[1];
           position.yestodayEnd = data.split(',')[2];
           position.currPrice = data.split(',')[3];
-          position.currPrice = 44;
+
+
           position.currMount = position.currPrice * position.initialCount;
           position.currMount = position.currMount.toFixed(2);
 
@@ -305,7 +321,7 @@ angular.module('zeus.controllers', [])
 
 // Called to create a new position
     $scope.newPosition = function () {
-      var positionCode = prompt('代码');
+      var positionCode = prompt('代码，6位数字');
       if (positionCode) {
         createPosition(positionCode);
       }
@@ -367,20 +383,20 @@ angular.module('zeus.controllers', [])
           if (parseFloat(position.highStopPrice1) <= parseFloat(position.highestPrice) &&
             parseFloat(position.highestPrice) < parseFloat(position.highStopPrice2)) {
             tmpHighPrice = position.highestPrice - 0.5 * position.stopAM * atr;
-            tmpHighPrice = tmpHighPrice.toFixed(3);
+            tmpHighPrice = tmpHighPrice.toFixed(2);
             position.realhighStopPrice = tmpHighPrice;
             position.currHighPriceColor = position.currPriceColor;
           }
           else if (parseFloat(position.highStopPrice2) <= parseFloat(position.highestPrice) &&
             parseFloat(position.highestPrice) < parseFloat(position.highStopPrice3)) {
             tmpHighPrice = position.highestPrice - 0.4 * position.stopAM * atr;
-            tmpHighPrice = tmpHighPrice.toFixed(3);
+            tmpHighPrice = tmpHighPrice.toFixed(2);
             position.realhighStopPrice = tmpHighPrice;
             position.currHighPriceColor = position.currPriceColor;
           }
           else if (parseFloat(position.highStopPrice3) <= parseFloat(position.highestPrice)) {
             tmpHighPrice = position.highestPrice - 0.3 * position.stopAM * atr;
-            tmpHighPrice = tmpHighPrice.toFixed(3);
+            tmpHighPrice = tmpHighPrice.toFixed(2);
             position.realhighStopPrice = tmpHighPrice;
             position.currHighPriceColor = position.currPriceColor;
           }
@@ -456,7 +472,8 @@ angular.module('zeus.controllers', [])
       $scope.activePosition.totalFund = position.totalFund;
       $scope.activePosition.initialCount = position.initialCount;
       $scope.activePosition.initialPrice = position.initialPrice;
-      $scope.activePosition.initialATR = position.currATR;
+      if (!$scope.activePosition.initialATR || typeof($scope.activePosition.initialATR) == 'undefined')
+        $scope.activePosition.initialATR = position.currATR;
       $scope.activePosition.positionRC = position.positionRC;
       $scope.activePosition.stopAM = position.stopAM;
 
@@ -495,7 +512,7 @@ angular.module('zeus.controllers', [])
     $timeout(function () {
       if ($scope.positions.length == 0) {
         while (true) {
-          var positionCode = prompt('名称:');
+          var positionCode = prompt('代码:');
           if (positionCode) {
             createPosition(positionCode);
             break;

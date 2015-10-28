@@ -51,7 +51,7 @@
     <ion-content>
       <ion-refresher on-refresh="doRefresh()"
                      pulling-text="松开刷新"
-                     refreshing-text="刷新..."
+                     refreshing-text="更新历史数据，稍后..."
                      refreshing-icon="ion-loading-b">
       </ion-refresher>
 
@@ -114,11 +114,11 @@
 
 
         <ion-item>
-          <p style="color:palevioletred">第一止盈（4*ATR）：{{activePosition.highStopPrice1}}元</p>
+          <p style="color:palevioletred">第一止盈 2R(0.5Am*atr)：{{activePosition.highStopPrice1}}元</p>
 
-          <p style="color:darkred">第二止盈（3*ATR）：{{activePosition.highStopPrice2}}元</p>
+          <p style="color:darkred">第二止盈 4R(0.4Am*atr)：{{activePosition.highStopPrice2}}元</p>
 
-          <p style="color:red">第三止盈（2*ATR）：{{activePosition.highStopPrice3}}元</p>
+          <p style="color:red">第三止盈 6R(0.3Am*atr)：{{activePosition.highStopPrice3}}元</p>
         </ion-item>
 
         <ion-item>
@@ -157,7 +157,7 @@
     <ion-content>
       <ion-refresher on-refresh="refreshAll()"
                      pulling-text="松开刷新"
-                     refreshing-text="刷新..."
+                     refreshing-text="更新历史数据，稍后..."
                      refreshing-icon="ion-loading-b">
       </ion-refresher>
 
@@ -275,7 +275,7 @@
 </ion-side-menus>
 
 <script id="new-task.html" type="text/ng-template">
-  <div class="modal" style="width: 90%;left:5%;height: 70%">
+  <div class="modal" style="width: 90%; height:80%;left: 10px;top: 15px;">
 
     <!-- Modal header bar -->
     <ion-header-bar class="bar-secondary">
@@ -291,22 +291,22 @@
 
         <div class="list">
           <label class="item item-input">
+            <span class="input-label">建仓ATR-14 :</span>
+            <input name="totalFund" type="text" readonly placeholder="计算推荐仓位" ng-model="activePosition.currATR">
+          </label>
+          <label class="item item-input item-stacked-label">
             <span class="input-label">总资金 :</span>
             <input name="totalFund" type="number" step="1000" placeholder="计算推荐仓位" ng-model="activePosition.totalFund">
-            <small class="error" style="color: red" ng-show="taskForm.totalFund.$invalid">1000倍数</small>
-
+            <small class="error" style="color: red" ng-show="taskForm.totalFund.$invalid">整数，1000的倍数</small>
           </label>
-          <label class="item item-input">
+          <label class="item item-input item-stacked-label">
             <span class="input-label">仓位风险系数(%) :</span>
             <input name="posRC" type="number" step="0.01" placeholder="计算推荐仓位" ng-model="activePosition.positionRC">
             <small class="error" style="color: red" ng-show="taskForm.posRC.$invalid">最多2位小数</small>
 
           </label>
-          <label class="item item-input">
-            <span class="input-label">建仓ATR-14 :</span>
-            <input type="text" readonly placeholder="计算推荐仓位、止损线(刷新自动读取)" ng-model="activePosition.currATR">
-          </label>
-          <label class="item item-input">
+
+          <label class="item item-input item-stacked-label">
             <span class="input-label">止损振幅倍数 :</span>
             <input name="stopAM" type="number" step="0.1" placeholder="计算仓位、止损线，推荐2.3~3"
                    ng-model="activePosition.stopAM">
@@ -318,15 +318,15 @@
         <p style="color:dimgrey">买入后参数</p>
 
         <div class="list">
-          <label class="item item-input">
+          <label class="item item-input item-stacked-label">
             <span class="input-label">买入价 :</span>
             <input name="initPrcie" type="number" step="0.001" placeholder="买入价" ng-model="activePosition.initialPrice">
             <small class="error" style="color: red" ng-show="taskForm.initPrcie.$invalid">最多3位小数</small>
           </label>
-          <label class="item item-input">
+          <label class="item item-input item-stacked-label">
             <span class="input-label">买入数量 :</span>
             <input name="initCount" type="number" step="100" placeholder="买入数量" ng-model="activePosition.initialCount">
-            <small class="error" style="color: red" ng-show="taskForm.initCount.$invalid">100的倍数</small>
+            <small class="error" style="color: red" ng-show="taskForm.initCount.$invalid">整数，100的倍数</small>
           </label>
 
         </div>
