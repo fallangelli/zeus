@@ -11,15 +11,17 @@ angular.module('zeus.controllers', [])
 
       var hisData = new Array();
       HisData.query(numCode, year, quarter).then(function (res) {
-          var oriDateP = position.hisData[0].dateP;
-          var oriDate = new Date(oriDateP.replace(/-/, "/"));
-          var newDateP = res[0].dateP;
-          var newDate = new Date(newDateP.replace(/-/, "/"));
-          if (oriDate.getTime() == newDate.getTime()) {
-            $scope.$broadcast('scroll.refreshComplete');
-            return;
+          if (position.hisData && position.hisData[0].dateP) {
+            var oriDateP = position.hisData[0].dateP;
+            var oriDate = new Date(oriDateP.replace(/-/, "/"));
+            var newDateP = res[0].dateP;
+            var newDate = new Date(newDateP.replace(/-/, "/"));
+            if (oriDate.getTime() == newDate.getTime() &&
+              position.hisData.length > 20) {
+              $scope.$broadcast('scroll.refreshComplete');
+              return;
+            }
           }
-
 
           for (item in res) {
             hisData[item] = res[item];
@@ -522,4 +524,5 @@ angular.module('zeus.controllers', [])
     });
 
   }
-);
+)
+;

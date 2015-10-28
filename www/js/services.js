@@ -12,8 +12,7 @@ angular.module('zeus.services', [])
             strExp += "\\s*<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s";
             var regexp = new RegExp(strExp, "g");
             var temp = data.match(regexp);
-            if (temp == null)
-              deferred.reject(data);
+
             var hisDataIndex = 0;
             var hisData = new Object();
             for (var item in temp) {
