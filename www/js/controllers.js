@@ -1,7 +1,7 @@
 angular.module('zeus.controllers', [])
 
 
-  .controller('TodoController', function ($scope, $q, $timeout, $ionicActionSheet, $ionicModal, Positions, HisData, ApiEndpoint, $ionicSideMenuDelegate, $http) {
+  .controller('TodoController', function ($scope, $q, $ionicPopup, $timeout, $ionicActionSheet, $ionicModal, Positions, HisData, ApiEndpoint, $ionicSideMenuDelegate, $http) {
     $scope.updateHisData = function (position, index) {
       var numCode = position.code.replace(/[a-zA-Z]+/, '');
 
@@ -323,10 +323,18 @@ angular.module('zeus.controllers', [])
 
 // Called to create a new position
     $scope.newPosition = function () {
-      var positionCode = prompt('代码，6位数字');
-      if (positionCode) {
+      $ionicPopup.prompt({
+        title: '建仓',
+        content: '代码',
+        inputType: 'number',
+        inputPlaceholder: '代码,6位数字'
+      }).then(function (positionCode) {
         createPosition(positionCode);
-      }
+      });
+      //var positionCode = prompt('代码，6位数字');
+      //if (positionCode) {
+      //  createPosition(positionCode);
+      //}
     };
 
 // Called to select the given position
