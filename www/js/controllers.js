@@ -329,7 +329,12 @@ angular.module('zeus.controllers', [])
         inputType: 'number',
         inputPlaceholder: '代码,6位数字'
       }).then(function (positionCode) {
-        createPosition(positionCode);
+        var code = positionCode.toString();
+        while (code.length < 6) {
+          code = '0' + code;
+        }
+
+        createPosition(code);
       });
       //var positionCode = prompt('代码，6位数字');
       //if (positionCode) {
