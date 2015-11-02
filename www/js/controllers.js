@@ -390,6 +390,7 @@ angular.module('zeus.controllers', [])
 
         if (position.realhighStopPrice == null)
           position.realhighStopPrice = 0;
+
         position.currHighPriceColor = {color: 'blue'};
 
         if (position.currPrice) {
