@@ -1,0 +1,99 @@
+<ion-view view-title="持仓">
+
+  <ion-content class="has-header">
+    <ion-refresher on-refresh="refreshAll()"
+                   pulling-text="松开刷新"
+                   refreshing-text="更新历史数据，稍后..."
+                   refreshing-icon="ion-loading-b">
+    </ion-refresher>
+
+    <ion-list ng-controller="PositionsCtrl">
+
+
+      <ion-item ng-repeat="position in positions"
+                class="item-thumbnail-left item-remove-animate item-icon-right"
+                type="item-text-wrap" href="#/tab/positions/{{position.id}}">
+        <img ng-src="{{position.imgsrc}}">
+
+        <h2>{{position.title}}({{position.code}})<b>{{position.currMount}}</b>
+        </h2>
+
+        <p ng-style="position.currPriceColor">
+          共 {{position.currChangePercent}}% {{position.currChange}}元
+        </p>
+
+        <p ng-style="position.currDayPriceColor">当日 {{position.currDayChangePercent}}%
+          {{position.currDayChange}}元 (atr:{{position.currATR}})
+        </p>
+
+        <p ng-style="position.currHighPriceColor">
+          止盈：{{position.realhighStopPrice}}
+          最高：{{position.highestPrice}}
+        </p>
+
+        <p>
+          <b style="color: darkgreen">{{position.lowStopPrice}}</b>
+
+          <b style="color:palevioletred">{{position.highStopPrice1}}</b>
+
+          <b style="color:darkred">{{position.highStopPrice2}}</b>
+
+          <b style="color:red">{{position.highStopPrice3}}</b>
+        </p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="delPosition(position.id)">
+          删除
+        </ion-option-button>
+
+        <!--<ion-delete-button class="ion-minus-circled"-->
+        <!--ng-click="items.splice($index, 1)">-->
+        <!--</ion-delete-button>-->
+        <!--<ion-reorder-button class="ion-navicon"-->
+        <!--on-reorder="reorderItem(item, $fromIndex, $toIndex)">-->
+        <!--</ion-reorder-button>-->
+      </ion-item>
+    </ion-list>
+
+    <!--<ion-list>-->
+
+    <!--<div class="item item-button-right item-thumbnail-left" ng-repeat="pos in positions"-->
+    <!--href="#/tab/positions/{{chat.id}}">-->
+    <!--<img ng-src="{{pos.imgsrc}}">-->
+
+    <!--<h2>{{pos.title}}</h2>-->
+
+    <!--<button class="button-bar button-positive">-->
+    <!--<i class="icon ion-calendar">a</i>-->
+    <!--</button>-->
+    <!--<button class="button button-positive">-->
+    <!--<i class="icon ion-android-time">b</i>-->
+    <!--</button>-->
+    <!--</div>-->
+
+    <!--<a class="item item-thumbnail-left" ng-repeat="pos in positions"-->
+    <!--href="#/tab/positions/{{chat.id}}">-->
+    <!--<img ng-src="{{pos.imgsrc}}">-->
+
+    <!--<h2>{{pos.title}}</h2>-->
+
+    <!--<p>Nine Inch Nails</p>-->
+    <!--</a>-->
+
+    <!--<ion-item class="item-remove-animate item-avatar item-icon-right"-->
+    <!--ng-repeat="pos in positions" type="item-text-wrap" href="#/tab/positions/{{chat.id}}">-->
+    <!--<img ng-src="{{pos.imgsrc}}">-->
+
+    <!--<h2>{{pos.title}}</h2>-->
+
+    <!--<p>{{pos.lastText}}</p>-->
+    <!--<i class="icon ion-chevron-right icon-accessory"></i>-->
+
+    <!--<ion-option-button class="button-assertive" ng-click="remove(chat)">-->
+    <!--Delete-->
+    <!--</ion-option-button>-->
+    <!--</ion-item>-->
+    <!--</ion-list>-->
+  </ion-content>
+
+</ion-view>
