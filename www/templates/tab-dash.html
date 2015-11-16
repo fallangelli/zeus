@@ -1,15 +1,22 @@
 <ion-view view-title="统计">
   <ion-content class="padding">
+    <ion-refresher on-refresh="doRefresh()"
+                   pulling-text="松开刷新"
+                   refreshing-text="更新历史数据，稍后..."
+                   refreshing-icon="ion-loading-b">
+    </ion-refresher>
+
     <div class="item item-divider">
-      <button class="button button-icon ion-plus" ng-click="newPosition()"/>
+      <button class="button button-icon ion-plus" ng-click="newPosition()">添加</button>
     </div>
 
     <div class="list card">
       <div class="item item-divider">总市值</div>
       <div class="item item-body">
         <div style="color: blue;font-size: 26px">
-          <b>{{tranItem.currMount}}</b>
+          <b>{{tranItem.currMount}}</b> 元
         </div>
+
       </div>
     </div>
 
@@ -18,7 +25,7 @@
       <div class="item item-divider">总盈亏</div>
       <div class="item item-body">
         <div ng-style="tranItem.changeColor">
-          <b style="font-size: 22px">{{tranItem.currChange}} {{tranItem.currChangePercent}}%</b>
+          <b style="font-size: 22px">{{tranItem.currChange}}元 {{tranItem.currChangePercent}}%</b>
         </div>
       </div>
     </div>
@@ -27,7 +34,7 @@
       <div class="item item-divider">今日盈亏</div>
       <div class="item item-body">
         <div ng-style="tranItem.currDayPriceColor">
-          <b style="font-size: 22px">{{tranItem.currDayMount}} {{tranItem.currDayPercent}}%</b>
+          <b style="font-size: 22px">{{tranItem.currDayMount}}元 {{tranItem.currDayPercent}}%</b>
         </div>
       </div>
     </div>

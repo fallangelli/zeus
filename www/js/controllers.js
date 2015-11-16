@@ -1,42 +1,13 @@
 angular.module('zeus.controllers', [])
 
-  .controller('DashCtrl', function ($scope, $timeout, $ionicPopup, $http, Positions, ApiEndpoint, HisData) {
+  .controller('DashCtrl', function ($scope, $timeout, $http, Positions, ApiEndpoint, HisData) {
     $scope.$on('$ionicView.enter', function (e) {
-      $scope.refreshAll();
-      var positions = Positions.all();
-      var item = new Object();
-      item.currMount = parseFloat(0);
-      item.currChangePercent = parseFloat(0);
-      item.currChange = parseFloat(0);
-      item.currDayMount = parseFloat(0);
-      item.currDayPercent = parseFloat(0);
-      for (var index in positions) {
-        var pos = positions[index];
-        if (typeof(pos.currMount) != "undefined")
-          item.currMount = parseFloat(item.currMount) + parseFloat(pos.currMount);
-        if (typeof(pos.currChangePercent) != "undefined")
-          item.currChangePercent = parseFloat(item.currChangePercent) + parseFloat(pos.currChangePercent);
-        if (typeof(pos.currChange) != "undefined")
-          item.currChange = parseFloat(item.currChange) + parseFloat(pos.currChange);
-        if (typeof(pos.currDayChange) != "undefined")
-          item.currDayMount = parseFloat(item.currDayMount) + parseFloat(pos.currDayChange);
-        if (typeof(pos.currDayChangePercent) != "undefined")
-          item.currDayPercent = parseFloat(item.currDayPercent) + parseFloat(pos.currDayChangePercent);
-      }
-      item.currDayPriceColor = {color: 'blue'};
-      if (item.currDayMount <= 0)
-        item.currDayPriceColor = {color: 'darkgreen'};
-      else
-        item.currDayPriceColor = {color: 'darkRed'};
-
-      item.changeColor = {color: 'blue'};
-      if (item.currChange <= 0)
-        item.changeColor = {color: 'darkgreen'};
-      else
-        item.changeColor = {color: 'darkRed'};
-
-      $scope.tranItem = item;
+      $scope.doRefresh();
     });
+
+    $scope.doRefresh = function () {
+      this.refreshAll();
+    };
 
     $scope.refreshAll = function () {
       $timeout(function () {
@@ -45,39 +16,54 @@ angular.module('zeus.controllers', [])
           loadRunTimeData($http, ApiEndpoint, Positions, positions[i]);
           updateHisData($scope, HisData, Positions, positions[i]);
           Positions.fillPosition(positions[i]);
-          }
+        }
         $scope.positions = positions;
+
+        var positions = Positions.all();
+        var item = new Object();
+        item.currMount = parseFloat(0);
+        item.currChangePercent = parseFloat(0);
+        item.currChange = parseFloat(0);
+        item.currDayMount = parseFloat(0);
+        item.currDayPercent = parseFloat(0);
+        for (var index in positions) {
+          var pos = positions[index];
+          if (typeof(pos.currMount) != "undefined")
+            item.currMount = parseFloat(item.currMount) + parseFloat(pos.currMount);
+          if (typeof(pos.currChangePercent) != "undefined")
+            item.currChangePercent = parseFloat(item.currChangePercent) + parseFloat(pos.currChangePercent);
+          if (typeof(pos.currChange) != "undefined")
+            item.currChange = parseFloat(item.currChange) + parseFloat(pos.currChange);
+          if (typeof(pos.currDayChange) != "undefined")
+            item.currDayMount = parseFloat(item.currDayMount) + parseFloat(pos.currDayChange);
+          if (typeof(pos.currDayChangePercent) != "undefined")
+            item.currDayPercent = parseFloat(item.currDayPercent) + parseFloat(pos.currDayChangePercent);
+        }
+        item.currDayPriceColor = {color: 'blue'};
+        if (item.currDayMount <= 0)
+          item.currDayPriceColor = {color: 'darkgreen'};
+        else
+          item.currDayPriceColor = {color: 'darkRed'};
+
+        item.changeColor = {color: 'blue'};
+        if (item.currChange <= 0)
+          item.changeColor = {color: 'darkgreen'};
+        else
+          item.changeColor = {color: 'darkRed'};
+
+        item.currMount = item.currMount.toFixed(2);
+        item.currChangePercent = item.currChangePercent.toFixed(3);
+        item.currChange = item.currChange.toFixed(2);
+        item.currDayMount = item.currDayMount.toFixed(2);
+        item.currDayPercent = item.currDayPercent.toFixed(3);
+        $scope.tranItem = item;
       }, 500);
     };
 
-    $scope.newPosition = function () {
-      $ionicPopup.prompt({
-        title: '建仓',
-        content: '代码',
-        inputType: 'number',
-        inputPlaceholder: '代码,6位数字'
-      }).then(function (positionCode) {
-        var code = positionCode.toString();
-        if (code.length <= 0)
-          return;
-        while (code.length < 6) {
-          code = '0' + code;
-          }
 
-        var newPosition = Positions.newPosition(code);
-        if (code.substr(0, 1) == '6')
-          newPosition.code = 'sh' + code;
-        if (code.substr(0, 1) == '0' || code.substr(0, 1) == '3')
-          newPosition.code = 'sz' + code;
-
-        loadRunTimeData($http, ApiEndpoint, Positions, newPosition);
-        updateHisData($scope, HisData, Positions, newPosition);
-        Positions.fillPosition(newPosition);
-      });
-    };
   })
 
-  .controller('PositionsCtrl', function ($scope, $timeout, $http, ApiEndpoint, Positions, HisData) {
+  .controller('PositionsCtrl', function ($scope, $timeout, $http, $ionicPopup, ApiEndpoint, Positions, HisData) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
@@ -88,6 +74,36 @@ angular.module('zeus.controllers', [])
       $scope.positions = Positions.all();
     });
 
+    $scope.newPosition = function () {
+      $ionicPopup.prompt({
+        title: '建仓',
+        content: '代码',
+        inputType: 'number',
+        inputPlaceholder: '代码,6位数字'
+      }).then(function (positionCode) {
+        $timeout(function () {
+          var code = positionCode.toString();
+          if (code.length <= 0)
+            return;
+          while (code.length < 6) {
+            code = '0' + code;
+          }
+
+          var newPosition = Positions.newPosition(code);
+          if (code.substr(0, 1) == '6')
+            newPosition.code = 'sh' + code;
+          if (code.substr(0, 1) == '0' || code.substr(0, 1) == '3')
+            newPosition.code = 'sz' + code;
+
+          loadRunTimeData($http, ApiEndpoint, Positions, newPosition);
+          updateHisData($scope, HisData, Positions, newPosition);
+          Positions.fillPosition(newPosition);
+
+          $scope.positions = Positions.all();
+        }, 500);
+
+      });
+    };
 
     $scope.delPosition = function (positionID) {
       Positions.delPosition(positionID);
@@ -102,7 +118,7 @@ angular.module('zeus.controllers', [])
           loadRunTimeData($http, ApiEndpoint, Positions, positions[i]);
           updateHisData($scope, HisData, Positions, positions[i]);
           Positions.fillPosition(positions[i]);
-            }
+        }
         $scope.positions = positions;
       }, 500);
     };
@@ -164,6 +180,7 @@ angular.module('zeus.controllers', [])
     }
 
     $scope.doRefresh = function () {
+
       $timeout(function () {
         //simulate async response
         var pos = $scope.position;
@@ -253,17 +270,17 @@ angular.module('zeus.controllers', [])
     };
   });
 
-    var getQuarterByMonth = function (month) {
-      if (month <= 2) {
-        return 1;
-      }
-      else if (month <= 5) {
-        return 2;
-      }
-      else if (month <= 8) {
-        return 3;
-      }
-      else {
-        return 4;
-      }
-    }
+var getQuarterByMonth = function (month) {
+  if (month <= 2) {
+    return 1;
+  }
+  else if (month <= 5) {
+    return 2;
+  }
+  else if (month <= 8) {
+    return 3;
+  }
+  else {
+    return 4;
+  }
+}

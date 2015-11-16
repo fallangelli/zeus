@@ -275,20 +275,21 @@ var loadRunTimeData = function ($http, ApiEndpoint, Positions, position) {
       position.currMount = position.currPrice * position.initialCount;
       position.currMount = position.currMount.toFixed(2);
 
+      var strDate = position.initDate.toString();
+      var initDate = new Date(strDate.substring(0, 10).replace(/-/, "/")).getTime();
+      var strCurrDate = new Date().toString();
+      var currDate = new Date(new Date(strDate.substring(0, 10).replace(/-/, "/"))).getTime();
 
+      position.currDayChangePercent = (position.currPrice - position.yestodayEnd) * 100 / position.yestodayEnd;
+      position.currDayChange = (position.currPrice - position.yestodayEnd) * position.initialCount;
+
+      position.currDayChangePercent = position.currDayChangePercent.toFixed(3);
+      position.currDayChange = position.currDayChange.toFixed(2);
       position.currDayPriceColor = {color: 'blue'};
-      if (position.currPrice && position.yestodayEnd) {
-        if (parseFloat(position.currPrice) < parseFloat(position.yestodayEnd))
-          position.currDayPriceColor = {color: 'darkgreen'};
-        else if (parseFloat(position.yestodayEnd) <= parseFloat(position.currPrice))
-          position.currDayPriceColor = {color: 'darkRed'};
-
-        position.currDayChangePercent = (position.currPrice - position.yestodayEnd) * 100 / position.yestodayEnd;
-        position.currDayChange = (position.currPrice - position.yestodayEnd) * position.initialCount;
-
-        position.currDayChangePercent = position.currDayChangePercent.toFixed(3);
-        position.currDayChange = position.currDayChange.toFixed(2);
-      }
+      if (position.currDayChange <= 0)
+        position.currDayPriceColor = {color: 'darkgreen'};
+      else
+        position.currDayPriceColor = {color: 'darkRed'};
 
 
       position.currPriceColor = {color: 'blue'};
