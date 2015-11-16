@@ -1,9 +1,78 @@
-<ion-view view-title="Account">
+<ion-view view-title="多空">
   <ion-content>
+
+
     <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
+      <div class="item item-divider">
+        沪深300
+      </div>
+
+      <div class="button-bar">
+        <a class="button" ng-click="open300();"
+           type="item-text-wrap">实时
+        </a>
+        <a class="button" ng-click="open300k();"
+           type="item-text-wrap">日k
+        </a>
+        <a class="button" ng-click="open_878002();"
+           type="item-text-wrap">看涨
+        </a>
+        <a class="button" ng-click="open_878003();"
+           type="item-text-wrap">看跌
+        </a>
+      </div>
+
+      <div class="item item-divider">
+        创业版
+      </div>
+      <div class="button-bar">
+        <a class="button" ng-click="openCY();"
+           type="item-text-wrap">实时
+        </a>
+        <a class="button" ng-click="openCYk();"
+           type="item-text-wrap">日k
+        </a>
+        <a class="button" ng-click="open_878004();"
+           type="item-text-wrap">看涨
+        </a>
+        <a class="button" ng-click="open_878005();"
+           type="item-text-wrap">看跌
+        </a>
+      </div>
+      <div class="item item-divider">
+        上证50
+      </div>
+      <div class="button-bar">
+        <a class="button" ng-click="open50();"
+           type="item-text-wrap">实时
+        </a>
+        <a class="button" ng-click="open50k();"
+           type="item-text-wrap">日k
+        </a>
+        <a class="button" ng-click="open_878006();"
+           type="item-text-wrap">看涨
+        </a>
+        <a class="button" ng-click="open_878007();"
+           type="item-text-wrap">看跌
+        </a>
+      </div>
+      <div class="item item-divider">
+        中证500
+      </div>
+      <div class="button-bar">
+        <a class="button" ng-click="open500();"
+           type="item-text-wrap">实时
+        </a>
+        <a class="button" ng-click="open500k();"
+           type="item-text-wrap">日k
+        </a>
+        <a class="button" ng-click="open_878008();"
+           type="item-text-wrap">看涨
+        </a>
+        <a class="button" ng-click="open_878009();"
+           type="item-text-wrap">看跌
+        </a>
+      </div>
     </ion-list>
   </ion-content>
 </ion-view>

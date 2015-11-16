@@ -1,75 +1,180 @@
 angular.module('zeus.controllers', [])
 
+  .controller('DashCtrl', function ($scope, $timeout, $ionicPopup, $http, Positions, ApiEndpoint, HisData) {
+    $scope.$on('$ionicView.enter', function (e) {
+      $scope.refreshAll();
+      var positions = Positions.all();
+      var item = new Object();
+      item.currMount = parseFloat(0);
+      item.currChangePercent = parseFloat(0);
+      item.currChange = parseFloat(0);
+      item.currDayMount = parseFloat(0);
+      item.currDayPercent = parseFloat(0);
+      for (var index in positions) {
+        var pos = positions[index];
+        if (typeof(pos.currMount) != "undefined")
+          item.currMount = parseFloat(item.currMount) + parseFloat(pos.currMount);
+        if (typeof(pos.currChangePercent) != "undefined")
+          item.currChangePercent = parseFloat(item.currChangePercent) + parseFloat(pos.currChangePercent);
+        if (typeof(pos.currChange) != "undefined")
+          item.currChange = parseFloat(item.currChange) + parseFloat(pos.currChange);
+        if (typeof(pos.currDayChange) != "undefined")
+          item.currDayMount = parseFloat(item.currDayMount) + parseFloat(pos.currDayChange);
+        if (typeof(pos.currDayChangePercent) != "undefined")
+          item.currDayPercent = parseFloat(item.currDayPercent) + parseFloat(pos.currDayChangePercent);
+      }
+      item.currDayPriceColor = {color: 'blue'};
+      if (item.currDayMount <= 0)
+        item.currDayPriceColor = {color: 'darkgreen'};
+      else
+        item.currDayPriceColor = {color: 'darkRed'};
 
-  .controller('TodoController', function ($scope, $q, $ionicPopup, $timeout, $ionicActionSheet, $ionicModal, Positions, HisData, ApiEndpoint, $ionicSideMenuDelegate, $http) {
-    $scope.updateHisData = function (position, index) {
-      var numCode = position.code.replace(/[a-zA-Z]+/, '');
+      item.changeColor = {color: 'blue'};
+      if (item.currChange <= 0)
+        item.changeColor = {color: 'darkgreen'};
+      else
+        item.changeColor = {color: 'darkRed'};
 
-      var now = new Date();
-      var quarter = getQuarterByMonth(now.getMonth());
-      var year = now.getFullYear();
+      $scope.tranItem = item;
+    });
 
-      var hisData = new Array();
-      HisData.query(numCode, year, quarter).then(function (res) {
-          if (position.hisData && position.hisData[0].dateP) {
-            var oriDateP = position.hisData[0].dateP;
-            var oriDate = new Date(oriDateP.replace(/-/, "/"));
-            var newDateP = res[0].dateP;
-            var newDate = new Date(newDateP.replace(/-/, "/"));
-            if (oriDate.getTime() == newDate.getTime() &&
-              position.hisData.length > 20) {
-              $scope.$broadcast('scroll.refreshComplete');
-              return;
-            }
+    $scope.refreshAll = function () {
+      $timeout(function () {
+        var positions = Positions.all();
+        for (var i = 0; i < positions.length; i++) {
+          loadRunTimeData($http, ApiEndpoint, Positions, positions[i]);
+          updateHisData($scope, HisData, Positions, positions[i]);
+          Positions.fillPosition(positions[i]);
+          }
+        $scope.positions = positions;
+      }, 500);
+    };
+
+    $scope.newPosition = function () {
+      $ionicPopup.prompt({
+        title: '建仓',
+        content: '代码',
+        inputType: 'number',
+        inputPlaceholder: '代码,6位数字'
+      }).then(function (positionCode) {
+        var code = positionCode.toString();
+        if (code.length <= 0)
+          return;
+        while (code.length < 6) {
+          code = '0' + code;
           }
 
-          for (item in res) {
-            hisData[item] = res[item];
-          }
+        var newPosition = Positions.newPosition(code);
+        if (code.substr(0, 1) == '6')
+          newPosition.code = 'sh' + code;
+        if (code.substr(0, 1) == '0' || code.substr(0, 1) == '3')
+          newPosition.code = 'sz' + code;
 
-          if (quarter > 1) {
-            quarter = quarter - 1;
-          }
-          else {
-            quarter = 4;
-            year = year - 1;
-          }
+        loadRunTimeData($http, ApiEndpoint, Positions, newPosition);
+        updateHisData($scope, HisData, Positions, newPosition);
+        Positions.fillPosition(newPosition);
+      });
+    };
+  })
 
-          HisData.query(numCode, year, quarter).then(function (res) {
-            for (item in res) {
-              hisData[hisData.length] = res[item];
+  .controller('PositionsCtrl', function ($scope, $timeout, $http, ApiEndpoint, Positions, HisData) {
+    // With the new view caching in Ionic, Controllers are only called
+    // when they are recreated or on app start, instead of every page change.
+    // To listen for when this page is active (for example, to refresh data),
+    // listen for the $ionicView.enter event:
+    //
+    $scope.$on('$ionicView.enter', function (e) {
+      $scope.refreshAll();
+      $scope.positions = Positions.all();
+    });
+
+
+    $scope.delPosition = function (positionID) {
+      Positions.delPosition(positionID);
+      $scope.positions = Positions.all();
+    };
+
+
+    $scope.refreshAll = function () {
+      $timeout(function () {
+        var positions = Positions.all();
+        for (var i = 0; i < positions.length; i++) {
+          loadRunTimeData($http, ApiEndpoint, Positions, positions[i]);
+          updateHisData($scope, HisData, Positions, positions[i]);
+          Positions.fillPosition(positions[i]);
             }
-            position.hisData = hisData;
-            Positions.saveOne(position, index);
+        $scope.positions = positions;
+      }, 500);
+    };
+  })
+
+  .controller('PositionDetailCtrl', function ($scope, $stateParams, $ionicModal, $timeout, $http, ApiEndpoint, Positions, HisData) {
+    $scope.position = Positions.get($stateParams.positionId);
+
+    $scope.openDayGif = function (code) {
+      var imgsrc = ApiEndpoint.img_url + "daily/n/" + code + ".gif";
+      $scope.showBigImage(imgsrc);
+    };
+
+    $scope.openMinGif = function (code) {
+      var imgsrc = ApiEndpoint.img_url + "min/n/" + code + ".gif"
+      $scope.showBigImage(imgsrc);
+    };
+
+    $scope.bigImage = false;    //初始默认大图是隐藏的
+    $scope.hideBigImage = function () {
+      $scope.bigImage = false;
+    };
+
+    $scope.showBigImage = function (imageName) {  //传递一个参数（图片的URl）
+      $scope.bigImageUrl = imageName;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
+      $scope.bigImage = true;                   //显示大图
+    };
+
+    $ionicModal.fromTemplateUrl('params.html', function (modal) {
+      $scope.taskModal = modal;
+    }, {
+      scope: $scope
+    });
+    $scope.saveParams = function (position) {
+      if (!position) {
+        return;
+      }
+
+      if (!position.initialATR || typeof(position.initialATR) == 'undefined')
+        position.initialATR = position.currATR;
+
+      // Inefficient, but save all the positions
+      Positions.saveOne(position);
+
+      loadRunTimeData($http, ApiEndpoint, Positions, position);
+      updateHisData($scope, HisData, Positions, position);
+      Positions.fillPosition(position);
 
 
-            if (quarter > 1) {
-              quarter = quarter - 1;
-            }
-            else {
-              quarter = 4;
-              year = year - 1;
-            }
-            HisData.query(numCode, year, quarter).then(function (res) {
-              for (item in res) {
-                hisData[hisData.length] = res[item];
-              }
-              position.hisData = hisData;
-              Positions.saveOne(position, index);
-              $scope.$broadcast('scroll.refreshComplete');
-            }, function () {
-              $scope.$broadcast('scroll.refreshComplete');
-            });
-          }, function () {
-            $scope.$broadcast('scroll.refreshComplete');
-          });
-        }, function () {
-          $scope.$broadcast('scroll.refreshComplete');
-        }
-      )
-      ;
+      $scope.taskModal.hide();
+    };
+
+    $scope.setParams = function () {
+      $scope.taskModal.show();
+    };
+
+    $scope.closeParams = function () {
+      $scope.taskModal.hide();
     }
 
+    $scope.doRefresh = function () {
+      $timeout(function () {
+        //simulate async response
+        var pos = $scope.position;
+        loadRunTimeData($http, ApiEndpoint, Positions, pos);
+        updateHisData($scope, HisData, Positions, pos);
+        Positions.fillPosition(pos);
+      }, 500);
+    };
+  })
+
+  .controller('AccountCtrl', function ($scope, $http, ApiEndpoint) {
 
 //300涨
     $scope.open_878002 = function (code) {
@@ -146,59 +251,7 @@ angular.module('zeus.controllers', [])
     $scope.open500k = function (code) {
       window.open(ApiEndpoint.img_url + "daily/n/sh000905.gif", "_blank", "location=no,toolbar=no");
     };
-
-    $scope.openDayGif = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/" + code + ".gif";
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.openMinGif = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/" + code + ".gif"
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.bigImage = false;    //初始默认大图是隐藏的
-    $scope.hideBigImage = function () {
-      $scope.bigImage = false;
-    };
-
-    $scope.showBigImage = function (imageName) {  //传递一个参数（图片的URl）
-      $scope.bigImageUrl = imageName;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
-      $scope.bigImage = true;                   //显示大图
-    };
-
-    $scope.refreshAll = function () {
-      $timeout(function () {
-        var positions = Positions.all();
-        for (var i = 0; i < positions.length; i++) {
-          loadRunTimeData(positions[i]);
-          $scope.updateHisData(positions[i], i);
-          $scope.fillPosition(positions[i], i);
-        }
-
-        $scope.positions = positions;
-
-
-      }, 500);
-
-    };
-
-    $scope.doRefresh = function () {
-      $timeout(function () {
-        //simulate async response
-        Positions.setLastActiveIndex(Positions.getLastActiveIndex());
-        var currIndex = Positions.getLastActiveIndex();
-        var pos = $scope.positions[currIndex];
-
-        loadRunTimeData(pos);
-        $scope.updateHisData(pos, currIndex);
-        $scope.fillPosition(pos, currIndex);
-
-        $scope.activePosition = pos;
-
-      }, 500);
-
-    };
+  });
 
     var getQuarterByMonth = function (month) {
       if (month <= 2) {
@@ -214,329 +267,3 @@ angular.module('zeus.controllers', [])
         return 4;
       }
     }
-
-
-    var loadRunTimeData = function (position) {
-      //var data = 'hq_str_sz000913="钱江摩托,8.56,8.32,14.30,9.15,8.48,8.75,8.76,31652880,278885232.67,49100,8.75,10700,8.74,73000,8.73,112500,8.72,4300,8.71,12100,8.76,29500,8.77,28000,8.78,43900,8.79,195100,8.80,2015-10-13,11:35:52,00"';
-      var myUrl = ApiEndpoint.hq_url + "list=" + position.code;
-      $http.get(myUrl).success(function (data, status, headers, config) {
-          var temp = data.split(',')[0];
-          position.title = temp.substring(temp.indexOf('"') + 1, temp.length);
-
-          position.todayStart = data.split(',')[1];
-          position.yestodayEnd = data.split(',')[2];
-          position.currPrice = data.split(',')[3];
-
-
-          position.currMount = position.currPrice * position.initialCount;
-          position.currMount = position.currMount.toFixed(2);
-
-
-          position.currDayPriceColor = {color: 'blue'};
-          if (position.currPrice && position.yestodayEnd) {
-            if (parseFloat(position.currPrice) < parseFloat(position.yestodayEnd))
-              position.currDayPriceColor = {color: 'darkgreen'};
-            else if (parseFloat(position.yestodayEnd) <= parseFloat(position.currPrice))
-              position.currDayPriceColor = {color: 'darkRed'};
-
-            position.currDayChangePercent = (position.currPrice - position.yestodayEnd) * 100 / position.yestodayEnd;
-            position.currDayChange = (position.currPrice - position.yestodayEnd) * position.initialCount;
-
-            position.currDayChangePercent = position.currDayChangePercent.toFixed(3);
-            position.currDayChange = position.currDayChange.toFixed(2);
-          }
-
-
-          position.currPriceColor = {color: 'blue'};
-          if (position.currPrice) {
-            if (parseFloat(position.currPrice) < parseFloat(position.lowStopPrice))
-              position.currPriceColor = {color: 'black', background: 'greenyellow'};
-            else if (parseFloat(position.lowStopPrice) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.initialPrice))
-              position.currPriceColor = {color: 'darkgreen'};
-            else if (parseFloat(position.initialPrice) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice1))
-              position.currPriceColor = {color: 'orange'};
-            else if (parseFloat(position.highStopPrice1) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice2))
-              position.currPriceColor = {color: 'palevioletred'};
-            else if (parseFloat(position.highStopPrice2) <= parseFloat(position.currPrice) && parseFloat(position.currPrice) < parseFloat(position.highStopPrice3))
-              position.currPriceColor = {color: 'darkred'};
-            else if (parseFloat(position.highStopPrice3) <= parseFloat(position.currPrice))
-              position.currPriceColor = {color: 'red'};
-          }
-
-
-          if (position.currPrice && position.initialPrice && position.initialCount) {
-            position.currChangePercent = (position.currPrice - position.initialPrice) * 100 / position.initialPrice;
-            position.currChange = (position.currPrice - position.initialPrice) * position.initialCount;
-
-            position.currChangePercent = position.currChangePercent.toFixed(3);
-            position.currChange = position.currChange.toFixed(2);
-          }
-
-        }
-      ).
-        error(function (data, status, headers, config) {
-          alert("读取实时信息错误");
-        }
-      );
-
-
-    }
-// A utility function for creating a new position
-// with the given positionCode
-    var createPosition = function (positionCode) {
-
-      var newPosition = Positions.newPosition(positionCode);
-      if (positionCode.substr(0, 1) == '6')
-        newPosition.code = 'sh' + positionCode;
-      if (positionCode.substr(0, 1) == '0' || positionCode.substr(0, 1) == '3')
-        newPosition.code = 'sz' + positionCode;
-
-
-      $scope.positions.push(newPosition);
-      $scope.updateHisData($scope.positions[$scope.positions.length - 1], $scope.positions.length - 1);
-
-      $scope.selectPosition(newPosition, $scope.positions.length - 1);
-    }
-
-    var setHighestPrice = function (position) {
-      var highestPrice = position.currPrice;
-      var strDate = position.initDate.toString();
-      var initDate = new Date(strDate.substring(0, 10).replace(/-/, "/"));
-      for (item in position.hisData) {
-        var itemDate = new Date(position.hisData[item].dateP.replace(/-/, "/"));
-        if (itemDate < initDate)
-          break;
-        if (position.hisData[item].maxP > highestPrice)
-          highestPrice = position.hisData[item].maxP;
-      }
-      position.highestPrice = highestPrice;
-    }
-// Load or initialize positions
-    $scope.positions = Positions.all();
-
-
-// Grab the last active, or the first position
-    var currPos = $scope.positions[Positions.getLastActiveIndex()];
-
-
-    $scope.activePosition = currPos;
-
-// Called to create a new position
-    $scope.newPosition = function () {
-      $ionicPopup.prompt({
-        title: '建仓',
-        content: '代码',
-        inputType: 'number',
-        inputPlaceholder: '代码,6位数字'
-      }).then(function (positionCode) {
-        var code = positionCode.toString();
-        while (code.length < 6) {
-          code = '0' + code;
-        }
-
-        createPosition(code);
-      });
-      //var positionCode = prompt('代码，6位数字');
-      //if (positionCode) {
-      //  createPosition(positionCode);
-      //}
-    };
-
-// Called to select the given position
-    $scope.selectPosition = function (position, index) {
-
-      Positions.setLastActiveIndex(index);
-      var pos = $scope.positions[Positions.getLastActiveIndex()];
-
-      loadRunTimeData(pos);
-      $scope.updateHisData(pos, Positions.getLastActiveIndex());
-      $scope.fillPosition(pos, Positions.getLastActiveIndex());
-      $scope.activePosition = pos;
-      $ionicSideMenuDelegate.toggleLeft(false);
-    };
-
-
-    $scope.delPosition = function (position, index) {
-      Positions.delPosition(index);
-      $scope.positions = Positions.all();
-      Positions.setLastActiveIndex(0);
-      $scope.activePosition = $scope.positions[Positions.getLastActiveIndex()];
-      $ionicSideMenuDelegate.toggleLeft(false);
-    };
-
-
-    $scope.fillPosition = function (position, index) {
-      if (position) {
-
-        //建议仓位数量
-        position.advicePosition = position.totalFund * position.positionRC / ( position.initialATR * position.stopAM * 100);
-        //建议仓位金额
-        if (position.initialPrice)
-          position.advicePosFund = position.advicePosition * position.initialPrice;
-        else
-          position.advicePosFund = position.advicePosition * position.currPrice;
-        //止损价
-        position.stopPercent = position.stopAM * position.initialATR / position.initialPrice;
-
-        position.stopFund = position.stopPercent * position.initialCount * position.initialPrice;
-
-        position.lowStopPrice = position.initialPrice * (1 - position.stopPercent);
-
-        position.highStopPrice1 = position.initialPrice * (1 + position.stopPercent * 2);
-
-        position.highStopPrice2 = position.initialPrice * (1 + position.stopPercent * 4);
-
-        position.highStopPrice3 = position.initialPrice * (1 + position.stopPercent * 6);
-
-        if (position.realhighStopPrice == null)
-          position.realhighStopPrice = 0;
-
-        position.currHighPriceColor = {color: 'blue'};
-
-        if (position.currPrice) {
-          var atr = position.currATR ? position.currATR : position.initialATR;
-          var tmpHighPrice = -1;
-          if (parseFloat(position.highStopPrice1) <= parseFloat(position.highestPrice) &&
-            parseFloat(position.highestPrice) < parseFloat(position.highStopPrice2)) {
-            tmpHighPrice = position.highestPrice - 0.5 * position.stopAM * atr;
-            tmpHighPrice = tmpHighPrice.toFixed(2);
-            position.realhighStopPrice = tmpHighPrice;
-            position.currHighPriceColor = position.currPriceColor;
-          }
-          else if (parseFloat(position.highStopPrice2) <= parseFloat(position.highestPrice) &&
-            parseFloat(position.highestPrice) < parseFloat(position.highStopPrice3)) {
-            tmpHighPrice = position.highestPrice - 0.4 * position.stopAM * atr;
-            tmpHighPrice = tmpHighPrice.toFixed(2);
-            position.realhighStopPrice = tmpHighPrice;
-            position.currHighPriceColor = position.currPriceColor;
-          }
-          else if (parseFloat(position.highStopPrice3) <= parseFloat(position.highestPrice)) {
-            tmpHighPrice = position.highestPrice - 0.3 * position.stopAM * atr;
-            tmpHighPrice = tmpHighPrice.toFixed(2);
-            position.realhighStopPrice = tmpHighPrice;
-            position.currHighPriceColor = position.currPriceColor;
-          }
-        }
-
-        //计算tr
-        if (position.hisData && position.hisData.length > 0) {
-          var hisIndex = 0;
-          while (hisIndex < position.hisData.length - 1) {
-            var itemBaseData = position.hisData[hisIndex];
-            var itemLastData = position.hisData[hisIndex + 1];
-
-            if (typeof(itemLastData) == "undefined")
-              break;
-
-            var tr = Math.max(Math.abs(itemBaseData.maxP - itemBaseData.minP), Math.abs(itemLastData.closingP - itemBaseData.maxP),
-              Math.abs(itemLastData.closingP - itemBaseData.minP));
-
-            itemBaseData['tr'] = parseFloat(tr);
-            hisIndex++;
-          }
-
-          position.hisData[position.hisData.length - 1]['tr'] = Math.abs(itemBaseData.maxP - itemBaseData.minP);
-
-          var sumTR = 0;
-          for (var iCount = 0; iCount < 14; iCount++) {
-            if (position.hisData[position.hisData.length - 1 - iCount])
-              sumTR += position.hisData[position.hisData.length - 1 - iCount].tr;
-          }
-          if (position.hisData[position.hisData.length - 14])
-            position.hisData[position.hisData.length - 14]['atr'] = parseFloat(sumTR) / 14;
-
-          for (var atrCount = position.hisData.length - 15; atrCount >= 0; atrCount--) {
-            if (!position.hisData[atrCount + 1]['atr'] || !position.hisData[atrCount]['tr'])
-              break;
-            var lastATR = parseFloat(position.hisData[atrCount + 1]['atr']);
-            var currTR = parseFloat(position.hisData[atrCount]['tr']);
-            var currATR = (lastATR * 13 + currTR) / 14;
-            position.hisData[atrCount]['atr'] = currATR
-          }
-          if (position.hisData[0]['atr']) {
-            position.currATR = position.hisData[0]['atr'];
-            position.currATR = position.currATR.toFixed(3);
-          }
-          setHighestPrice(position);
-        }
-
-
-        position.advicePosition = position.advicePosition.toFixed(0);
-        position.advicePosFund = position.advicePosFund.toFixed(2);
-        position.lowStopPrice = position.lowStopPrice.toFixed(2);
-        position.stopFund = position.stopFund.toFixed(2);
-        position.stopPercent = position.stopPercent.toFixed(3);
-        position.highStopPrice1 = position.highStopPrice1.toFixed(2);
-        position.highStopPrice2 = position.highStopPrice2.toFixed(2);
-        position.highStopPrice3 = position.highStopPrice3.toFixed(2);
-
-        Positions.saveOne(position, index);
-      }
-    }
-// Create our modal
-    $ionicModal.fromTemplateUrl('new-task.html', function (modal) {
-      $scope.taskModal = modal;
-    }, {
-      scope: $scope
-    });
-
-    $scope.createTask = function (position) {
-      if (!$scope.activePosition || !position) {
-        return;
-      }
-
-      $scope.activePosition.totalFund = position.totalFund;
-      $scope.activePosition.initialCount = position.initialCount;
-      $scope.activePosition.initialPrice = position.initialPrice;
-      if (!$scope.activePosition.initialATR || typeof($scope.activePosition.initialATR) == 'undefined')
-        $scope.activePosition.initialATR = position.currATR;
-      $scope.activePosition.positionRC = position.positionRC;
-      $scope.activePosition.stopAM = position.stopAM;
-
-      loadRunTimeData($scope.activePosition);
-      $scope.updateHisData($scope.activePosition, Positions.getLastActiveIndex());
-      $scope.fillPosition($scope.activePosition, Positions.getLastActiveIndex());
-
-
-      // Inefficient, but save all the positions
-      Positions.save($scope.positions);
-
-      $scope.taskModal.hide();
-
-
-    };
-
-    $scope.newTask = function () {
-      $scope.taskModal.show();
-    };
-
-    $scope.closeNewTask = function () {
-      $scope.taskModal.hide();
-    }
-
-    $scope.toggleLeft = function () {
-      $ionicSideMenuDelegate.toggleLeft();
-    };
-
-
-    $scope.toggleRight = function () {
-      $ionicSideMenuDelegate.toggleRight();
-    };
-// Try to create the first position, make sure to defer
-// this by using $timeout so everything is initialized
-// properly
-    $timeout(function () {
-      if ($scope.positions.length == 0) {
-        while (true) {
-          var positionCode = prompt('代码:');
-          if (positionCode) {
-            createPosition(positionCode);
-            break;
-          }
-        }
-      }
-    });
-
-  }
-)
-;
