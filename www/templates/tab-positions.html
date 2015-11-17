@@ -1,23 +1,14 @@
-<div>
-  <button class="button button-assertive"
-          style="width:60px;height:25px;position:absolute;z-index:999;right:0px; bottom:0px;" ng-click="newPosition()">
-    添加
-  </button>
-</div>
-
 <ion-view view-title="持仓">
 
   <ion-content class="has-header">
 
-  <ion-refresher on-refresh="refreshAll()"
+    <ion-refresher on-refresh="refreshAll()"
                    pulling-text="松开刷新"
                    refreshing-text="更新历史数据，稍后..."
                    refreshing-icon="ion-loading-b">
     </ion-refresher>
 
     <ion-list ng-controller="PositionsCtrl">
-
-
       <ion-item ng-repeat="position in positions"
                 class="item-thumbnail-left item-remove-animate item-icon-right"
                 type="item-text-wrap" href="#/tab/positions/{{position.id}}">

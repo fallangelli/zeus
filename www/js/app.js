@@ -56,6 +56,7 @@ angular.module('zeus', ['ionic', 'zeus.controllers', 'zeus.services'])
 
       .state('tab.positions', {
         url: '/positions',
+        cache: false,
         views: {
           'tab-positions': {
             templateUrl: 'templates/tab-positions.html',
