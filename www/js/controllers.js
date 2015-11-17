@@ -127,6 +127,11 @@ angular.module('zeus.controllers', [])
   .controller('PositionDetailCtrl', function ($scope, $stateParams, $ionicModal, $timeout, $http, ApiEndpoint, Positions, HisData) {
     $scope.position = Positions.get($stateParams.positionId);
 
+    $scope.openWeekGif = function (code) {
+      var imgsrc = ApiEndpoint.img_url + "weekly/n/" + code + ".gif";
+      $scope.showBigImage(imgsrc);
+    };
+
     $scope.openDayGif = function (code) {
       var imgsrc = ApiEndpoint.img_url + "daily/n/" + code + ".gif";
       $scope.showBigImage(imgsrc);
