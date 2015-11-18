@@ -2,7 +2,7 @@ angular.module('zeus.controllers', [])
 
   .controller('DashCtrl', function ($scope, $state, $timeout, $http, $ionicPopup, Positions, ApiEndpoint, HisData) {
     $scope.$on('$ionicView.enter', function (e) {
-      $scope.doRefresh();
+      $scope.refreshAll();
     });
 
 
@@ -42,54 +42,53 @@ angular.module('zeus.controllers', [])
     };
 
     $scope.refreshAll = function () {
-      $timeout(function () {
-        var positions = Positions.all();
-        for (var i = 0; i < positions.length; i++) {
-          loadRunTimeData($http, ApiEndpoint, Positions, positions[i]);
-          updateHisData($scope, HisData, Positions, positions[i]);
-          Positions.fillPosition(positions[i]);
-        }
-        $scope.positions = positions;
+      var positions = Positions.all();
+      for (var i = 0; i < positions.length; i++) {
+        loadRunTimeData($http, ApiEndpoint, Positions, positions[i]);
+        updateHisData($scope, HisData, Positions, positions[i]);
+        Positions.fillPosition(positions[i]);
+      }
+      $scope.positions = positions;
 
-        var positions = Positions.all();
-        var item = new Object();
-        item.currMount = parseFloat(0);
-        item.currChangePercent = parseFloat(0);
-        item.currChange = parseFloat(0);
-        item.currDayMount = parseFloat(0);
-        item.currDayPercent = parseFloat(0);
-        for (var index in positions) {
-          var pos = positions[index];
-          if (typeof(pos.currMount) != "undefined")
-            item.currMount = parseFloat(item.currMount) + parseFloat(pos.currMount);
-          if (typeof(pos.currChangePercent) != "undefined")
-            item.currChangePercent = parseFloat(item.currChangePercent) + parseFloat(pos.currChangePercent);
-          if (typeof(pos.currChange) != "undefined")
-            item.currChange = parseFloat(item.currChange) + parseFloat(pos.currChange);
-          if (typeof(pos.currDayChange) != "undefined")
-            item.currDayMount = parseFloat(item.currDayMount) + parseFloat(pos.currDayChange);
-          if (typeof(pos.currDayChangePercent) != "undefined")
-            item.currDayPercent = parseFloat(item.currDayPercent) + parseFloat(pos.currDayChangePercent);
-        }
-        item.currDayPriceColor = {color: 'blue'};
-        if (item.currDayMount <= 0)
-          item.currDayPriceColor = {color: 'darkgreen'};
-        else
-          item.currDayPriceColor = {color: 'darkRed'};
+      var positions = Positions.all();
+      var item = new Object();
+      item.currMount = parseFloat(0);
+      item.currChangePercent = parseFloat(0);
+      item.currChange = parseFloat(0);
+      item.currDayMount = parseFloat(0);
+      item.currDayPercent = parseFloat(0);
+      for (var index in positions) {
+        var pos = positions[index];
+        if (typeof(pos.currMount) != "undefined")
+          item.currMount = parseFloat(item.currMount) + parseFloat(pos.currMount);
+        if (typeof(pos.currChangePercent) != "undefined")
+          item.currChangePercent = parseFloat(item.currChangePercent) + parseFloat(pos.currChangePercent);
+        if (typeof(pos.currChange) != "undefined")
+          item.currChange = parseFloat(item.currChange) + parseFloat(pos.currChange);
+        if (typeof(pos.currDayChange) != "undefined")
+          item.currDayMount = parseFloat(item.currDayMount) + parseFloat(pos.currDayChange);
+        if (typeof(pos.currDayChangePercent) != "undefined")
+          item.currDayPercent = parseFloat(item.currDayPercent) + parseFloat(pos.currDayChangePercent);
+      }
+      item.currDayPriceColor = {color: 'blue'};
+      if (item.currDayMount <= 0)
+        item.currDayPriceColor = {color: 'darkgreen'};
+      else
+        item.currDayPriceColor = {color: 'darkRed'};
 
-        item.changeColor = {color: 'blue'};
-        if (item.currChange <= 0)
-          item.changeColor = {color: 'darkgreen'};
-        else
-          item.changeColor = {color: 'darkRed'};
+      item.changeColor = {color: 'blue'};
+      if (item.currChange <= 0)
+        item.changeColor = {color: 'darkgreen'};
+      else
+        item.changeColor = {color: 'darkRed'};
 
-        item.currMount = item.currMount.toFixed(2);
-        item.currChangePercent = item.currChangePercent.toFixed(3);
-        item.currChange = item.currChange.toFixed(2);
-        item.currDayMount = item.currDayMount.toFixed(2);
-        item.currDayPercent = item.currDayPercent.toFixed(3);
-        $scope.tranItem = item;
-      }, 500);
+      item.currMount = item.currMount.toFixed(2);
+      item.currChangePercent = item.currChangePercent.toFixed(3);
+      item.currChange = item.currChange.toFixed(2);
+      item.currDayMount = item.currDayMount.toFixed(2);
+      item.currDayPercent = item.currDayPercent.toFixed(3);
+
+      $scope.tranItem = item;
     };
 
 
