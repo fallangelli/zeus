@@ -1,6 +1,6 @@
 angular.module('zeus.controllers', [])
 
-  .controller('DashCtrl', function ($scope, $state, $timeout, $http, $ionicPopup, Positions, ApiEndpoint, HisData) {
+  .controller('DashCtrl', function ($scope, $rootScope, $state, $timeout, $http, $ionicPopup, Positions, ApiEndpoint, HisData) {
     $scope.$on('$ionicView.enter', function (e) {
       $scope.refreshAll();
     });
@@ -25,7 +25,7 @@ angular.module('zeus.controllers', [])
           newPosition.code = 'sh' + code;
         if (code.substr(0, 1) == '0' || code.substr(0, 1) == '3')
           newPosition.code = 'sz' + code;
-        $scope.positions.push(newPosition);
+        $rootScope.positions.push(newPosition);
         loadRunTimeData($http, ApiEndpoint, Positions, newPosition);
         updateHisData($scope, HisData, Positions, newPosition);
         Positions.fillPosition(newPosition);
@@ -48,7 +48,6 @@ angular.module('zeus.controllers', [])
         updateHisData($scope, HisData, Positions, positions[i]);
         Positions.fillPosition(positions[i]);
       }
-      $scope.positions = positions;
 
       var positions = Positions.all();
       var item = new Object();
@@ -59,15 +58,15 @@ angular.module('zeus.controllers', [])
       item.currDayPercent = parseFloat(0);
       for (var index in positions) {
         var pos = positions[index];
-        if (typeof(pos.currMount) != "undefined")
+        if (typeof(pos.currMount) != "undefined" && !isNaN(pos.currMount))
           item.currMount = parseFloat(item.currMount) + parseFloat(pos.currMount);
-        if (typeof(pos.currChangePercent) != "undefined")
+        if (typeof(pos.currChangePercent) != "undefined" && !isNaN(pos.currChangePercent))
           item.currChangePercent = parseFloat(item.currChangePercent) + parseFloat(pos.currChangePercent);
-        if (typeof(pos.currChange) != "undefined")
+        if (typeof(pos.currChange) != "undefined" && !isNaN(pos.currChange))
           item.currChange = parseFloat(item.currChange) + parseFloat(pos.currChange);
-        if (typeof(pos.currDayChange) != "undefined")
+        if (typeof(pos.currDayChange) != "undefined" && !isNaN(pos.currDayChange))
           item.currDayMount = parseFloat(item.currDayMount) + parseFloat(pos.currDayChange);
-        if (typeof(pos.currDayChangePercent) != "undefined")
+        if (typeof(pos.currDayChangePercent) != "undefined" && !isNaN(pos.currDayChangePercent))
           item.currDayPercent = parseFloat(item.currDayPercent) + parseFloat(pos.currDayChangePercent);
       }
       item.currDayPriceColor = {color: 'blue'};
@@ -94,7 +93,7 @@ angular.module('zeus.controllers', [])
 
   })
 
-  .controller('PositionsCtrl', function ($scope, $state, $timeout, $http, $ionicPopup, ApiEndpoint, Positions, HisData) {
+  .controller('PositionsCtrl', function ($scope, $rootScope, $state, $timeout, $http, $ionicPopup, ApiEndpoint, Positions, HisData) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
@@ -104,12 +103,11 @@ angular.module('zeus.controllers', [])
     //$scope.refreshAll();
     //$scope.positions = Positions.all();
     //});
-    $scope.positions = Positions.all();
-
+    $rootScope.positions = Positions.all();
 
     $scope.delPosition = function (positionID) {
       Positions.delPosition(positionID);
-      $scope.positions = Positions.all();
+      $rootScope.positions = Positions.all();
     };
 
 
@@ -121,7 +119,7 @@ angular.module('zeus.controllers', [])
           updateHisData($scope, HisData, Positions, positions[i]);
           Positions.fillPosition(positions[i]);
         }
-        $scope.positions = positions;
+        $rootScope.positions = positions;
       }, 500);
     };
   })
