@@ -127,28 +127,22 @@ angular.module('zeus.controllers', [])
   .controller('PositionDetailCtrl', function ($scope, $stateParams, $ionicModal, $timeout, $http, ApiEndpoint, Positions, HisData) {
     $scope.position = Positions.get($stateParams.positionId);
 
-    $scope.openWeekGif = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "weekly/n/" + code + ".gif";
-      $scope.showBigImage(imgsrc);
+    $scope.openKGif = function (code) {
+      $scope.showBigImage(code);
     };
 
-    $scope.openDayGif = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/" + code + ".gif";
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.openMinGif = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/" + code + ".gif"
-      $scope.showBigImage(imgsrc);
-    };
 
     $scope.bigImage = false;    //初始默认大图是隐藏的
     $scope.hideBigImage = function () {
       $scope.bigImage = false;
     };
 
-    $scope.showBigImage = function (imageName) {  //传递一个参数（图片的URl）
-      $scope.bigImageUrl = imageName;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
+    $scope.showBigImage = function (code) {  //传递一个参数（图片的URl）
+      var hisData = new Array();
+      hisData.push(ApiEndpoint.img_url + "min/n/" + code + ".gif");
+      hisData.push(ApiEndpoint.img_url + "daily/n/" + code + ".gif");
+      hisData.push(ApiEndpoint.img_url + "weekly/n/" + code + ".gif");
+      $scope.bigImageUrls = hisData;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
       $scope.bigImage = true;                   //显示大图
     };
 
@@ -202,40 +196,26 @@ angular.module('zeus.controllers', [])
       $scope.bigImage = false;
     };
 
-    $scope.showBigImage = function (imageName) {  //传递一个参数（图片的URl）
-      $scope.bigImageUrl = imageName;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
+    $scope.showBigImage = function (code) {  //传递一个参数（图片的URl）
+      var hisData = new Array();
+      hisData.push(ApiEndpoint.img_url + "min/n/" + code + ".gif");
+      hisData.push(ApiEndpoint.img_url + "daily/n/" + code + ".gif");
+      hisData.push(ApiEndpoint.img_url + "weekly/n/" + code + ".gif");
+      $scope.bigImageUrls = hisData;                   //$scope定义一个变量Url，这里会在大图出现后再次点击隐藏大图使用
+      console.log(hisData);
       $scope.bigImage = true;                   //显示大图
     };
 
-    $scope.open_sh000001 = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/sh000001.gif";
-      $scope.showBigImage(imgsrc);
+    $scope.open_sh000001k = function () {
+      $scope.showBigImage('sh000001');
     };
 
-    $scope.open_sh000001d = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/sh000001.gif";
-      $scope.showBigImage(imgsrc);
+
+    $scope.open_sz399001k = function (code) {
+      $scope.showBigImage('sz399001');
+
     };
 
-    $scope.open_sh000001w = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "weekly/n/sh000001.gif";
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.open_sz399001 = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/sz399001.gif";
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.open_sz399001d = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/sz399001.gif";
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.open_sz399001w = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "weekly/n/sz399001.gif";
-      $scope.showBigImage(imgsrc);
-    };
 //300涨
     $scope.open_878002 = function (code) {
       window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
@@ -246,15 +226,8 @@ angular.module('zeus.controllers', [])
       window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
     };
 
-
-    $scope.open300 = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/sh000300.gif";
-      $scope.showBigImage(imgsrc);
-    };
-
     $scope.open300k = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/sh000300.gif";
-      $scope.showBigImage(imgsrc);
+      $scope.showBigImage('sh000300');
     };
 
 
@@ -268,15 +241,8 @@ angular.module('zeus.controllers', [])
       window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
     };
 
-
-    $scope.openCY = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/sz399006.gif";
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.openCYk = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/sz399006.gif";
-      $scope.showBigImage(imgsrc);
+    $scope.openCYK = function (code) {
+      $scope.showBigImage('sz399006');
     };
 
 //50涨
@@ -285,18 +251,8 @@ angular.module('zeus.controllers', [])
     };
 
 //50跌
-    $scope.open_878007 = function (code) {
-      window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878007", "_blank", "location=no,toolbar=no");
-    };
-
-    $scope.open50 = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/sh000016.gif";
-      $scope.showBigImage(imgsrc);
-    };
-
     $scope.open50k = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/sh000016.gif";
-      $scope.showBigImage(imgsrc);
+      $scope.showBigImage('sh000016');
     };
 
 
@@ -310,14 +266,8 @@ angular.module('zeus.controllers', [])
       window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878009", "_blank", "location=no,toolbar=no");
     };
 
-    $scope.open500 = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "min/n/sh000905.gif";
-      $scope.showBigImage(imgsrc);
-    };
-
-    $scope.open500k = function (code) {
-      var imgsrc = ApiEndpoint.img_url + "daily/n/sh000905.gif";
-      $scope.showBigImage(imgsrc);
+    $scope.open500k = function () {
+      $scope.showBigImage('sh000905');
     };
   });
 

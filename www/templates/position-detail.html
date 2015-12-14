@@ -12,17 +12,27 @@
                    refreshing-icon="ion-loading-b">
     </ion-refresher>
 
-    <div id="rightDisplay" ng-if="bigImage" class="popover-backdrop"
-         style="position: fixed;top: 0;left: 0;z-index: 10; width: 100%;height: 100%;"
+    <div id="rightDisplay" ng-if="bigImage" class="popover-backdrop" style="background-color:ghostwhite"
          ng-click="hideBigImage()">
-      <img ng-if="bigImage" class="ion-image"
-           style="position: absolute;top: 10%;left: 1%;z-index: 10;display: block;margin-top: 18px;
-         margin-left: 1px;width: 99%; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);background-color:ghostwhite"
-           src="{{bigImageUrl}}"/>
-      <img ng-if="!bigImage" class="ion-image"
-           style="position: absolute;top: 10%;left: 1%;z-index: 10;display: block;margin-top: 18px;
-         margin-left: 1px;width: 99%; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);background-color:ghostwhite"
-           src="/img/ionic.png"/>
+      <div class="row">
+        <div class="col col-80">
+          <img ng-if="bigImage" class="ion-image" style="width:100%"
+               src="{{bigImageUrls[0]}}"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-80">
+          <img ng-if="bigImage" class="ion-image" style="width:100%"
+               src="{{bigImageUrls[1]}}"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-80">
+          <img ng-if="bigImage" class="ion-image" style="width:100%"
+               src="{{bigImageUrls[2]}}"/>
+        </div>
+      </div>
+
     </div>
 
     <ion-item>
@@ -31,13 +41,7 @@
 
       <li>{{position.title}}({{position.code}})
         <button class="button button-small button-positive"
-                ng-click="openWeekGif(position.code)">周线
-        </button>
-        <button class="button button-small button-positive"
-                ng-click="openDayGif(position.code)">日线
-        </button>
-        <button class="button button-small button-positive"
-                ng-click="openMinGif(position.code)">分时线
+                ng-click="openKGif(position.code)">K线
         </button>
 
         <button class="button button-small button-dark" ng-click="setParams()">参数</button>
