@@ -14,15 +14,20 @@
                 type="item-text-wrap" href="#/tab/positions/{{position.id}}">
         <img ng-src="{{position.imgsrc}}">
 
-        <h2>{{iii}}{{position.title}}({{position.code}})<b>{{position.currMount}}</b>
+        <h2>{{iii}}{{position.title}}({{position.code}})
         </h2>
 
+        <b>{{position.currMount}}</b> (atr:{{position.currATR}})
         <p ng-style="position.currPriceColor">
-          {{position.currPrice}} 共 {{position.currChangePercent}}% {{position.currChange}}元
+          {{position.currPrice}} - {{position.initialPrice}}
+        </p>
+
+        <p ng-style="position.currPriceColor">
+          共 {{position.currChangePercent}}% {{position.currChange}}元
         </p>
 
         <p ng-style="position.currDayPriceColor">当日 {{position.currDayChangePercent}}%
-          {{position.currDayChange}}元 (atr:{{position.currATR}})
+          {{position.currDayChange}}元
         </p>
 
         <p ng-style="position.currHighPriceColor">
