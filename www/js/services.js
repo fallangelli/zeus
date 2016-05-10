@@ -5,25 +5,25 @@ angular.module('zeus.services', [])
         var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
         var myUrl = ApiEndpoint.his_url + numCode + ".phtml?year=" + year + "&jidu=" + quarter;
         $http({method: 'GET', url: myUrl}).
-          success(function (data, status, headers, config) {
-            var strExp = "<a target='_blank'\\s+href='http://vip.stock.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php\\?";
-            strExp += "symbol=\\w{8}&date=\\d{4}-\\d{2}-\\d{2}'>\\s*([^\\s]+)\\s+</a>\\s*</div></td>";
-            strExp += "\\s*<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s";
-            var regexp = new RegExp(strExp, "g");
-            var temp = data.match(regexp);
+        success(function (data, status, headers, config) {
+          var strExp = "<a target='_blank'\\s+href='http://vip.stock.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php\\?";
+          strExp += "symbol=\\w{8}&date=\\d{4}-\\d{2}-\\d{2}'>\\s*([^\\s]+)\\s+</a>\\s*</div></td>";
+          strExp += "\\s*<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s+<td[^\\d]*([^<]*)</div></td>\\s";
+          var regexp = new RegExp(strExp, "g");
+          var temp = data.match(regexp);
 
-            var hisDataIndex = 0;
-            var hisData = new Object();
-            for (var item in temp) {
-              var parseData = parseHis(temp[item]);
-              hisData[hisDataIndex] = parseData;
-              hisDataIndex++;
-            }
-            deferred.resolve(hisData);  // 声明执行成功，即http请求数据成功，可以返回数据了
-          }).
-          error(function (data, status, headers, config) {
-            deferred.reject(data);   // 声明执行失败，即服务器返回错误
-          });
+          var hisDataIndex = 0;
+          var hisData = new Object();
+          for (var item in temp) {
+            var parseData = parseHis(temp[item]);
+            hisData[hisDataIndex] = parseData;
+            hisDataIndex++;
+          }
+          deferred.resolve(hisData);  // 声明执行成功，即http请求数据成功，可以返回数据了
+        }).
+        error(function (data, status, headers, config) {
+          deferred.reject(data);   // 声明执行失败，即服务器返回错误
+        });
         return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
       } // end query
     };
@@ -320,7 +320,7 @@ var loadRunTimeData = function ($http, ApiEndpoint, Positions, position) {
       Positions.saveOne(position);
     }
   ).
-    error(function (data, status, headers, config) {
+  error(function (data, status, headers, config) {
       alert("读取实时信息错误");
     }
   )
