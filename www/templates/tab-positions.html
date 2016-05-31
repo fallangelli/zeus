@@ -9,6 +9,35 @@
     </ion-refresher>
 
     <ion-list ng-controller="PositionsCtrl">
+      <ion-item ng-repeat="position in dkpositions"
+                class="item-thumbnail-left item-remove-animate item-icon-right"
+                type="item-text-wrap">
+
+        <h2>{{position.title}} ({{position.code}})
+        </h2>
+
+        <p>
+          买入份额 : <b>{{position.initialCount}}</b>
+        </p>
+
+        <p ng-style="position.currPriceColor">
+          实时盈亏 :<b>{{position.currChangePercent}} : {{position.currChange}}</b>
+        </p>
+
+        <p>
+          买入比例 :<b>{{position.initialPrice}}</b>
+        </p>
+
+        <p ng-style="position.currPriceColor">
+          当前比例 :<b>{{position.realPrice}}</b>
+        </p>
+
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="delDKPosition(position.id)">
+          删除
+        </ion-option-button>
+      </ion-item>
       <ion-item ng-repeat="position in positions"
                 class="item-thumbnail-left item-remove-animate item-icon-right"
                 type="item-text-wrap" href="#/tab/positions/{{position.id}}">

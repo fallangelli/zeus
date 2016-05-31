@@ -13,5 +13,8 @@
     },{
        "path": "/img_sina/",
        "proxyUrl": "http://image.sinajs.cn/newchart/"
+    },{
+        "path": "/scales_url/",
+        "proxyUrl": "http://www.gf.com.cn/highStock/"
     }]
 }

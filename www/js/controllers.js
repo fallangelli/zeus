@@ -1,6 +1,7 @@
 angular.module('zeus.controllers', [])
 
-  .controller('DashCtrl', function ($scope, $rootScope, $state, $timeout, $http, $ionicPopup, Positions, ApiEndpoint, HisData) {
+  .controller('DashCtrl', function ($scope, $rootScope, $state, $timeout, $http, $ionicModal, $ionicPopup,
+                                    DKPositions, Positions, ApiEndpoint, HisData) {
     $scope.$on('$ionicView.enter', function (e) {
       $scope.refreshAll();
     });
@@ -35,6 +36,37 @@ angular.module('zeus.controllers', [])
         }, 1000);
 
       });
+    };
+
+    $ionicModal.fromTemplateUrl('DKinit.html', function (modal) {
+      $scope.taskModal = modal;
+    }, {
+      scope: $scope
+    });
+
+    $scope.closeParams = function () {
+      $scope.taskModal.hide();
+    }
+
+    $scope.newDKPosition = function () {
+      $scope.taskModal.show();
+    };
+
+    $scope.saveDKPosition = function (position) {
+      if (!position) {
+        return;
+      }
+      var newPosition = DKPositions.newPosition(position);
+      if (!$rootScope.dkpositions)
+        $rootScope.dkpositions = new Array;
+      $rootScope.dkpositions.push(newPosition);
+      DKPositions.saveOne(newPosition);
+
+      //loadRunTimeData($http, ApiEndpoint, Positions, position);
+      //updateHisData($scope, HisData, Positions, position);
+      //Positions.fillPosition(position);
+
+      $scope.taskModal.hide();
     };
 
     $scope.doRefresh = function () {
@@ -88,28 +120,36 @@ angular.module('zeus.controllers', [])
       item.currDayPercent = item.currDayPercent.toFixed(3);
 
       $scope.tranItem = item;
+      $scope.$broadcast('scroll.refreshComplete');
     };
 
 
   })
 
-  .controller('PositionsCtrl', function ($scope, $rootScope, $state, $timeout, $http, $ionicPopup, ApiEndpoint, Positions, HisData) {
+  .controller('PositionsCtrl', function ($scope, $rootScope, $state, $timeout, $http, $ionicPopup, ApiEndpoint,
+                                         DKPositions, Positions, HisData, Scales) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
     // listen for the $ionicView.enter event:
     //
-    //$scope.$on('$ionicView.enter', function (e) {
-    //$scope.refreshAll();
-    //$scope.positions = Positions.all();
-    //});
+    $scope.$on('$ionicView.enter', function (e) {
+      $scope.refreshAll();
+      $scope.positions = Positions.all();
+    });
+
     $rootScope.positions = Positions.all();
+    $rootScope.dkpositions = DKPositions.all();
 
     $scope.delPosition = function (positionID) {
       Positions.delPosition(positionID);
       $rootScope.positions = Positions.all();
     };
 
+    $scope.delDKPosition = function (positionID) {
+      DKPositions.delPosition(positionID);
+      $rootScope.dkpositions = Positions.all();
+    };
 
     $scope.refreshAll = function () {
       $timeout(function () {
@@ -120,6 +160,17 @@ angular.module('zeus.controllers', [])
           Positions.fillPosition(positions[i]);
         }
         $rootScope.positions = positions;
+
+
+        var dkpositions = DKPositions.all();
+        for (var i = 0; i < dkpositions.length; i++) {
+          position = dkpositions[i]
+          Scales.updatePosition(position);
+        }
+        $rootScope.dkpositions = dkpositions;
+
+        $scope.$broadcast('scroll.refreshComplete');
+
       }, 500);
     };
   })
@@ -151,6 +202,7 @@ angular.module('zeus.controllers', [])
     }, {
       scope: $scope
     });
+
     $scope.saveParams = function (position) {
       if (!position) {
         return;
@@ -190,10 +242,32 @@ angular.module('zeus.controllers', [])
     };
   })
 
-  .controller('AccountCtrl', function ($scope, $http, ApiEndpoint) {
+  .controller('AccountCtrl', function ($scope, $http, $timeout, ApiEndpoint, Scales) {
     $scope.bigImage = false;    //初始默认大图是隐藏的
     $scope.hideBigImage = function () {
       $scope.bigImage = false;
+    };
+
+    $scope.$on('$ionicView.enter', function (e) {
+      $scope.refreshAll();
+    });
+
+
+    $scope.refreshAll = function () {
+      $timeout(function () {
+        Scales.query('878004').then(function (res) {
+          $scope.scaleCYBUp = res;
+          $scope.$broadcast('scroll.refreshComplete');
+        }, function () {
+          $scope.$broadcast('scroll.refreshComplete');
+        });
+        Scales.query('878005').then(function (res) {
+          $scope.scaleCYBDown = res;
+          $scope.$broadcast('scroll.refreshComplete');
+        }, function () {
+          $scope.$broadcast('scroll.refreshComplete');
+        });
+      }, 500);
     };
 
     $scope.showBigImage = function (code) {  //传递一个参数（图片的URl）

@@ -1,32 +1,50 @@
 <ion-view view-title="多空">
   <ion-content>
+    <ion-refresher on-refresh="refreshAll()"
+                   pulling-text="松开刷新"
+                   refreshing-text="更新历史数据，稍后..."
+                   refreshing-icon="ion-loading-b">
+    </ion-refresher>
 
-
-    <div id="rightDisplay" ng-if="bigImage" class="popover-backdrop" style="background-color:ghostwhite"
-         ng-click="hideBigImage()">
-      <div class="row">
-        <div class="col col-80">
-          <img ng-if="bigImage" class="ion-image" style="width:100%"
-               src="{{bigImageUrls[0]}}"/>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col col-80">
-          <img ng-if="bigImage" class="ion-image" style="width:100%"
-               src="{{bigImageUrls[1]}}"/>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col col-80">
-          <img ng-if="bigImage" class="ion-image" style="width:100%"
-               src="{{bigImageUrls[2]}}"/>
-        </div>
-      </div>
-
-    </div>
+    <!--<div id="rightDisplay" ng-if="bigImage" class="popover-backdrop" style="background-color:ghostwhite"-->
+    <!--ng-click="hideBigImage()">-->
+    <!--<div class="row">-->
+    <!--<div class="col col-80">-->
+    <!--<img ng-if="bigImage" class="ion-image" style="width:100%"-->
+    <!--src="{{bigImageUrls[0]}}"/>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+    <!--<div class="col col-80">-->
+    <!--<img ng-if="bigImage" class="ion-image" style="width:100%"-->
+    <!--src="{{bigImageUrls[1]}}"/>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+    <!--<div class="col col-80">-->
+    <!--<img ng-if="bigImage" class="ion-image" style="width:100%"-->
+    <!--src="{{bigImageUrls[2]}}"/>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
 
     <ion-list>
+
+      <div class="item item-divider">
+        创业版
+      </div>
+      <div class="button-bar">
+        <a class="button" ng-click="openCYK();"
+           type="item-text-wrap">行情
+        </a>
+        <a class="button" ng-click="open_878004();"
+           type="item-text-wrap">看涨({{scaleCYBUp}})
+        </a>
+        <a class="button" ng-click="open_878005();"
+           type="item-text-wrap">看跌({{scaleCYBDown}})
+        </a>
+      </div>
       <div class="item item-divider">
         沪深300
       </div>
@@ -43,20 +61,6 @@
         </a>
       </div>
 
-      <div class="item item-divider">
-        创业版
-      </div>
-      <div class="button-bar">
-        <a class="button" ng-click="openCYK();"
-           type="item-text-wrap">行情
-        </a>
-        <a class="button" ng-click="open_878004();"
-           type="item-text-wrap">看涨
-        </a>
-        <a class="button" ng-click="open_878005();"
-           type="item-text-wrap">看跌
-        </a>
-      </div>
       <div class="item item-divider">
         上证50
       </div>

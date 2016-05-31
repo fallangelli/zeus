@@ -3,12 +3,14 @@ angular.module('zeus', ['ionic', 'zeus.controllers', 'zeus.services'])
     //his_url: 'http://localhost:8100/his_data/',
     //hq_url: 'http://localhost:8100/real_hq/',
     //gf_url: 'http://localhost:8100/gf/',
-    //img_url: 'http://localhost:8100/img_sina/'
-    //
+    //img_url: 'http://localhost:8100/img_sina/',
+    //scales_url: 'http://localhost:8100/scales_url/'
+
     his_url: 'http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/',
     hq_url: 'http://hq.sinajs.cn/',
     gf_url: 'http://www.gf.com.cn/match/nxsy/',
-    img_url: 'http://image.sinajs.cn/newchart/'
+    img_url: 'http://image.sinajs.cn/newchart/',
+    scales_url: 'http://www.gf.com.cn/highStock/'
   })
 
   .run(function ($ionicPlatform) {

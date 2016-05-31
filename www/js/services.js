@@ -210,6 +210,150 @@ angular.module('zeus.services', [])
       }
     }
   }])
+  .factory('DKPositions', ['$http', 'ApiEndpoint', 'HisData', function ($http, ApiEndpoint, HisData) {
+    return {
+      all: function () {
+        var positionString = window.localStorage['dkpositions'];
+        if (positionString) {
+          var positions = angular.fromJson(positionString);
+          for (var pos in positions) {
+            if (positions[pos].code == '878004')
+              positions[pos].title = '创业板看多';
+            if (positions[pos].code == '878005')
+              positions[pos].title = '创业板看空';
+          }
+          return positions;
+        }
+        return [];
+      },
+      get: function (positionID) {
+        var allPos = this.all();
+        for (var i = 0; i < allPos.length; i++) {
+          if (allPos[i].id == positionID) {
+            return allPos[i];
+          }
+        }
+        return null;
+      },
+      newPosition: function (position) {
+        // Add a new position
+        return {
+          code: position.code,
+          initialPrice: position.initialPrice,
+          initialCount: position.initialCount,
+          realPrice: '',
+          initDate: new Date()
+        };
+      }
+      ,
+      saveOne: function (position) {
+        if (position.id == null) {
+          var allPos = this.all();
+          var tm = new Date();
+          var strID = tm.getMilliseconds() + tm.getSeconds() * 60 + tm.getMinutes() * 3600 + tm.getHours() * 60 * 3600 + tm.getDay() * 3600 * 24 + tm.getMonth() * 3600 * 24 * 31 + tm.getYear() * 3600 * 24 * 31 * 12;
+          position.id = strID;
+          allPos.push(position);
+          this.saveAll(allPos);
+          return;
+        }
+        else {
+          var allPos = this.all();
+          for (var i = 0; i < allPos.length; i++) {
+            if (allPos[i].id == position.id) {
+              allPos[i] = position;
+              this.saveAll(allPos);
+              return;
+            }
+          }
+        }
+      },
+      saveAll: function (positions) {
+        window.localStorage['dkpositions'] = angular.toJson(positions);
+      }
+      ,
+      delPosition: function (positionID) {
+        var allPos = this.all();
+        if (isNaN(positionID) || allPos >= allPos.length) {
+          return false;
+        }
+        var currIndex = -1;
+        for (var i = 0; i < allPos.length; i++) {
+          if (allPos[i].id == positionID) {
+            allPos.splice(i, 1);
+            break;
+          }
+        }
+        window.localStorage['dkpositions'] = angular.toJson(allPos);
+      }
+    }
+  }])
+  .factory('Scales', ['$http', '$q', 'ApiEndpoint', 'DKPositions', function ($http, $q, ApiEndpoint, DKPositions) {
+    return {
+      updatePosition: function (position) {
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行scales_url/
+
+        var myUrl = ApiEndpoint.scales_url + "service/HighStock878002Domain.go?function=InitData";
+        myUrl += "&code=" + position.code + "&name=%25E5%25AE%259E%25E6%2597%25B6%25E8%25BD%25AC%25E6%258D%25A2%25E6%25AF%2594%25E4%25BE%258B";
+        $http({method: 'GET', url: myUrl}).
+        success(function (data, status, headers, config) {
+          var validData;
+          for (i = 0; i < data.length; i++) {
+            var curData = data[i];
+            if (curData[1] == null) {
+              validData = data[i - 1][1];
+              break;
+            }
+            if (i == data.length - 1)
+              validData = data[i][1];
+          }
+
+          position.realPrice = validData;
+          position.currChangePercent = (position.realPrice - position.initialPrice) * 100;
+          position.currChangePercent = position.currChangePercent.toFixed(3);
+          position.currChange = (position.realPrice - position.initialPrice) * position.initialCount;
+          position.currChange = position.currChange.toFixed(1);
+          if (position.currChangePercent > 0)
+            position.currPriceColor = {color: 'darkred'};
+          else
+            position.currPriceColor = {color: 'darkgreen'};
+
+          DKPositions.saveOne(position);
+
+          return deferred.promise;
+        }).
+        error(function (data, status, headers, config) {
+          deferred.reject(data);   // 声明执行失败，即服务器返回错误
+        });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      },
+      query: function (numCode) {
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行scales_url/
+
+        var myUrl = ApiEndpoint.scales_url + "service/HighStock878002Domain.go?function=InitData";
+        myUrl += "&code=" + numCode + "&name=%25E5%25AE%259E%25E6%2597%25B6%25E8%25BD%25AC%25E6%258D%25A2%25E6%25AF%2594%25E4%25BE%258B";
+        $http({method: 'GET', url: myUrl}).
+        success(function (data, status, headers, config) {
+          var validData;
+          for (i = 0; i < data.length; i++) {
+            var curData = data[i];
+            if (curData[1] == null) {
+              validData = data[i - 1][1];
+              break;
+            }
+            if (i == data.length - 1)
+              validData = data[i][1];
+          }
+
+          deferred.resolve(validData);  // 声明执行成功，即http请求数据成功，可以返回数据了
+          return deferred.promise;
+        }).
+        error(function (data, status, headers, config) {
+          deferred.reject(data);   // 声明执行失败，即服务器返回错误
+        });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      } // end query
+    };
+  }])
   .
   factory('Chats', function () {
     // Might use a resource here that returns a JSON array
