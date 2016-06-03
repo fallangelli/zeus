@@ -16,5 +16,8 @@
     },{
         "path": "/scales_url/",
         "proxyUrl": "http://www.gf.com.cn/highStock/"
+    },{
+        "path": "/gfdk_his_url/",
+        "proxyUrl": "https://store.gf.com.cn/money/netval/"
     }]
 }

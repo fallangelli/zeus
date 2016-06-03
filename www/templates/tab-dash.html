@@ -11,33 +11,42 @@
       <button class="button icon-left ion-star button-assertive" ng-click="newDKPosition()">添加多空</button>
     </div>
 
+
     <div class="list card">
-      <div class="item item-divider">总市值</div>
-      <div class="item item-body">
-        <div style="color: blue;font-size: 26px">
-          <b>{{tranItem.currMount}}</b> 元
+      <div class="item item-divider">股票</div>
+      <div class="item">
+        <div style="color: blue">
+          总市值 : <b>{{tranItem.currMount}}</b> 元
         </div>
-
       </div>
-    </div>
-
-
-    <div class="list card">
-      <div class="item item-divider">总盈亏</div>
-      <div class="item item-body">
+      <div class="item">
         <div ng-style="tranItem.changeColor">
-          <b style="font-size: 22px">{{tranItem.currChange}}元 {{tranItem.currChangePercent}}%</b>
+          总盈亏 : <b style="font-size: 22px">{{tranItem.currChange}}元 {{tranItem.currChangePercent}}%</b>
         </div>
       </div>
-    </div>
-
-    <div class="list card">
-      <div class="item item-divider">今日盈亏</div>
-      <div class="item item-body">
+      <div class="item">
         <div ng-style="tranItem.currDayPriceColor">
-          <b style="font-size: 22px">{{tranItem.currDayMount}}元 {{tranItem.currDayPercent}}%</b>
+          今日盈亏 : <b style="font-size: 22px">{{tranItem.currDayMount}}元 {{tranItem.currDayPercent}}%</b>
         </div>
       </div>
+
+      <div class="item item-divider">多空</div>
+      <div class="item">
+        <div style="color: blue">
+          持仓数 : <b>{{tranDKItem.totalCount}}</b> 元
+        </div>
+      </div>
+      <div class="item">
+        <div ng-style="tranDKItem.currColor">
+          实时市值 : <b>{{tranDKItem.totalMount}}</b> 元
+        </div>
+      </div>
+      <div class="item">
+        <div ng-style="tranDKItem.currColor">
+          实时盈亏 : <b style="font-size: 22px">{{tranDKItem.totalChange}}元 {{tranDKItem.totalChangePercent}}%</b>
+        </div>
+      </div>
+
     </div>
 
   </ion-content>
@@ -81,9 +90,9 @@
 
           <label class="item item-input item-stacked-label">
             <span class="input-label">买入比例 :</span>
-            <input name="initPrcie" type="number" step="0.001" placeholder="买入价"
+            <input name="initPrcie" type="number" step="0.0001" placeholder="买入比例"
                    ng-model="position.initialPrice">
-            <small class="error" style="color: red" ng-show="taskForm.initPrcie.$invalid">小数，最多3位</small>
+            <small class="error" style="color: red" ng-show="taskForm.initPrcie.$invalid">小数，最多4位</small>
           </label>
           <label class="item item-input item-stacked-label">
             <span class="input-label">买入数量 :</span>

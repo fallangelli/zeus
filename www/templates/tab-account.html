@@ -6,27 +6,27 @@
                    refreshing-icon="ion-loading-b">
     </ion-refresher>
 
-    <!--<div id="rightDisplay" ng-if="bigImage" class="popover-backdrop" style="background-color:ghostwhite"-->
-    <!--ng-click="hideBigImage()">-->
-    <!--<div class="row">-->
-    <!--<div class="col col-80">-->
-    <!--<img ng-if="bigImage" class="ion-image" style="width:100%"-->
-    <!--src="{{bigImageUrls[0]}}"/>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="row">-->
-    <!--<div class="col col-80">-->
-    <!--<img ng-if="bigImage" class="ion-image" style="width:100%"-->
-    <!--src="{{bigImageUrls[1]}}"/>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="row">-->
-    <!--<div class="col col-80">-->
-    <!--<img ng-if="bigImage" class="ion-image" style="width:100%"-->
-    <!--src="{{bigImageUrls[2]}}"/>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
+    <div id="rightDisplay" ng-if="bigImage" class="popover-backdrop" style="background-color:ghostwhite"
+         ng-click="hideBigImage()">
+      <div class="row">
+        <div class="col col-80">
+          <img ng-if="bigImage" class="ion-image" style="width:100%"
+               src="{{bigImageUrls[0]}}"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-80">
+          <img ng-if="bigImage" class="ion-image" style="width:100%"
+               src="{{bigImageUrls[1]}}"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-80">
+          <img ng-if="bigImage" class="ion-image" style="width:100%"
+               src="{{bigImageUrls[2]}}"/>
+        </div>
+      </div>
+    </div>
 
 
     <ion-list>
@@ -108,3 +108,26 @@
     </ion-list>
   </ion-content>
 </ion-view>
+
+
+<script id="DKHis.html" type="text/ng-template">
+  <div class="modal" style="width: 70%; height:70%;left: 40px;top: 25px;">
+
+    <!-- Modal header bar -->
+    <ion-header-bar class="bar-secondary">
+      <h1 class="title">{{currObjList[0].prod_name}}</h1>
+      <button class="button button-clear button-positive" ng-click="closeParams()">Cancel</button>
+    </ion-header-bar>
+
+    <!-- Modal content area -->
+    <ion-content>
+      <div class="list" ng-repeat="obj in currObjList">
+        <div class="row">
+          <p class="col">{{obj.init_date}}</p>
+
+          <p class="col">{{obj.product_net_value}}</p>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</script>

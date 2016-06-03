@@ -11,7 +11,7 @@
     <ion-list ng-controller="PositionsCtrl">
       <ion-item ng-repeat="position in dkpositions"
                 class="item-thumbnail-left item-remove-animate item-icon-right"
-                type="item-text-wrap">
+                type="item-text-wrap" ng-click="dkpositionOpen(position.code)">
 
         <h2>{{position.title}} ({{position.code}})
         </h2>
@@ -38,6 +38,7 @@
           删除
         </ion-option-button>
       </ion-item>
+
       <ion-item ng-repeat="position in positions"
                 class="item-thumbnail-left item-remove-animate item-icon-right"
                 type="item-text-wrap" href="#/tab/positions/{{position.id}}">

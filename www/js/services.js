@@ -25,6 +25,19 @@ angular.module('zeus.services', [])
           deferred.reject(data);   // 声明执行失败，即服务器返回错误
         });
         return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      }, // end query
+      queryDKHis: function (numCode) {
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+        var myUrl = ApiEndpoint.gfdk_his_url + "page?product_code=" + numCode;
+        $http({method: 'GET', url: myUrl}).
+        success(function (data, status, headers, config) {
+          var objArray = data.dataList;
+          deferred.resolve(objArray);  // 声明执行成功，即http请求数据成功，可以返回数据了
+        }).
+        error(function (data, status, headers, config) {
+          deferred.reject(data);   // 声明执行失败，即服务器返回错误
+        });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
       } // end query
     };
   }])
@@ -297,19 +310,26 @@ angular.module('zeus.services', [])
         $http({method: 'GET', url: myUrl}).
         success(function (data, status, headers, config) {
           var validData;
+          if (data[0][1] == null || typeof(data[0][1]) == 'undefined') {
+            deferred.reject(data);
+            return;
+          }
           for (i = 0; i < data.length; i++) {
             var curData = data[i];
-            if (curData[1] == null) {
+
+            if (curData[1] == null || typeof(curData[1]) == 'undefined') {
               validData = data[i - 1][1];
               break;
             }
-            if (i == data.length - 1)
+            else if (i == data.length - 1) {
               validData = data[i][1];
+              break;
+            }
           }
 
           position.realPrice = validData;
           position.currChangePercent = (position.realPrice - position.initialPrice) * 100;
-          position.currChangePercent = position.currChangePercent.toFixed(3);
+          position.currChangePercent = position.currChangePercent.toFixed(4);
           position.currChange = (position.realPrice - position.initialPrice) * position.initialCount;
           position.currChange = position.currChange.toFixed(1);
           if (position.currChangePercent > 0)
@@ -334,14 +354,21 @@ angular.module('zeus.services', [])
         $http({method: 'GET', url: myUrl}).
         success(function (data, status, headers, config) {
           var validData;
+          if (data[0][1] == null || typeof(data[0][1]) == 'undefined') {
+            deferred.reject(data);
+            return;
+          }
           for (i = 0; i < data.length; i++) {
             var curData = data[i];
-            if (curData[1] == null) {
+
+            if (curData[1] == null || typeof(curData[1]) == 'undefined') {
               validData = data[i - 1][1];
               break;
             }
-            if (i == data.length - 1)
+            else if (i == data.length - 1) {
               validData = data[i][1];
+              break;
+            }
           }
 
           deferred.resolve(validData);  // 声明执行成功，即http请求数据成功，可以返回数据了
@@ -465,7 +492,7 @@ var loadRunTimeData = function ($http, ApiEndpoint, Positions, position) {
     }
   ).
   error(function (data, status, headers, config) {
-      alert("读取实时信息错误");
+
     }
   )
 }

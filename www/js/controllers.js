@@ -102,13 +102,13 @@ angular.module('zeus.controllers', [])
           item.currDayPercent = parseFloat(item.currDayPercent) + parseFloat(pos.currDayChangePercent);
       }
       item.currDayPriceColor = {color: 'blue'};
-      if (item.currDayMount <= 0)
+      if (item.currDayMount < 0)
         item.currDayPriceColor = {color: 'darkgreen'};
       else
         item.currDayPriceColor = {color: 'darkRed'};
 
       item.changeColor = {color: 'blue'};
-      if (item.currChange <= 0)
+      if (item.currChange < 0)
         item.changeColor = {color: 'darkgreen'};
       else
         item.changeColor = {color: 'darkRed'};
@@ -120,6 +120,43 @@ angular.module('zeus.controllers', [])
       item.currDayPercent = item.currDayPercent.toFixed(3);
 
       $scope.tranItem = item;
+
+
+      var dkpositions = DKPositions.all();
+      var totalMount = parseFloat(0);
+      var totalCount = parseFloat(0);
+      var totalChangePercent = parseFloat(0);
+      var totalChange = parseFloat(0);
+      for (var index in dkpositions) {
+        var pos = dkpositions[index];
+        if (typeof(pos.realPrice) != "undefined" && !isNaN(pos.realPrice)) {
+          totalCount += pos.initialCount;
+          totalMount += pos.initialCount * pos.realPrice;
+          totalChangePercent += (pos.realPrice - pos.initialPrice) * 100;
+          totalChange += (pos.realPrice - pos.initialPrice) * pos.initialCount;
+        }
+      }
+
+      currColor = {color: 'blue'};
+      if (totalChangePercent < 0)
+        currColor = {color: 'darkgreen'};
+      else
+        currColor = {color: 'darkRed'};
+
+      totalMount = totalMount.toFixed(0);
+      totalCount = totalCount.toFixed(0);
+      totalChangePercent = totalChangePercent.toFixed(2);
+      totalChange = totalChange.toFixed(0);
+
+      var DKitem = new Object();
+      DKitem.totalMount = totalMount;
+      DKitem.totalCount = totalCount;
+      DKitem.totalChangePercent = totalChangePercent;
+      DKitem.totalChange = totalChange;
+      DKitem.currColor = currColor;
+      $scope.tranDKItem = DKitem;
+
+
       $scope.$broadcast('scroll.refreshComplete');
     };
 
@@ -136,6 +173,7 @@ angular.module('zeus.controllers', [])
     $scope.$on('$ionicView.enter', function (e) {
       $scope.refreshAll();
       $scope.positions = Positions.all();
+      $scope.dkpositions = DKPositions.all();
     });
 
     $rootScope.positions = Positions.all();
@@ -144,11 +182,13 @@ angular.module('zeus.controllers', [])
     $scope.delPosition = function (positionID) {
       Positions.delPosition(positionID);
       $rootScope.positions = Positions.all();
+      $scope.positions = Positions.all();
     };
 
     $scope.delDKPosition = function (positionID) {
       DKPositions.delPosition(positionID);
-      $rootScope.dkpositions = Positions.all();
+      $rootScope.dkpositions = DKPositions.all();
+      $scope.dkpositions = DKPositions.all();
     };
 
     $scope.refreshAll = function () {
@@ -164,14 +204,23 @@ angular.module('zeus.controllers', [])
 
         var dkpositions = DKPositions.all();
         for (var i = 0; i < dkpositions.length; i++) {
-          position = dkpositions[i]
-          Scales.updatePosition(position);
+          position = dkpositions[i];
+          Scales.updatePosition(position).then(function (res) {
+
+          }, function () {
+
+          });
+          ;
         }
         $rootScope.dkpositions = dkpositions;
 
         $scope.$broadcast('scroll.refreshComplete');
 
       }, 500);
+    };
+
+    $scope.dkpositionOpen = function (code) {
+      window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=" + code, "_blank", "location=no,toolbar=no");
     };
   })
 
@@ -242,7 +291,7 @@ angular.module('zeus.controllers', [])
     };
   })
 
-  .controller('AccountCtrl', function ($scope, $http, $timeout, ApiEndpoint, Scales) {
+  .controller('AccountCtrl', function ($scope, $http, $timeout, $ionicModal, ApiEndpoint, Scales, HisData) {
     $scope.bigImage = false;    //初始默认大图是隐藏的
     $scope.hideBigImage = function () {
       $scope.bigImage = false;
@@ -252,12 +301,21 @@ angular.module('zeus.controllers', [])
       $scope.refreshAll();
     });
 
+    $ionicModal.fromTemplateUrl('DKHis.html', function (modal) {
+      $scope.taskModal = modal;
+    }, {
+      scope: $scope
+    });
+
+    $scope.closeParams = function () {
+      $scope.taskModal.hide();
+    }
 
     $scope.refreshAll = function () {
       $timeout(function () {
+
         Scales.query('878004').then(function (res) {
           $scope.scaleCYBUp = res;
-          $scope.$broadcast('scroll.refreshComplete');
         }, function () {
           $scope.$broadcast('scroll.refreshComplete');
         });
@@ -307,12 +365,26 @@ angular.module('zeus.controllers', [])
 
 //创业涨
     $scope.open_878004 = function (code) {
-      window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
+      HisData.queryDKHis('878004').then(function (res) {
+        $scope.currObjList = res;
+        $scope.taskModal.show();
+      }, function () {
+
+      });
+
+
+      //window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
     };
 
 //创业跌
     $scope.open_878005 = function (code) {
-      window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
+      HisData.queryDKHis('878005').then(function (res) {
+        $scope.currObjList = res;
+        $scope.taskModal.show();
+      }, function () {
+
+      });
+      //window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878005", "_blank", "location=no,toolbar=no");
     };
 
     $scope.openCYK = function (code) {
