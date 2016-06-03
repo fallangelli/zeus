@@ -111,7 +111,7 @@
 
 
 <script id="DKHis.html" type="text/ng-template">
-  <div class="modal" style="width: 70%; height:70%;left: 40px;top: 25px;">
+  <div class="modal" style="width: 60%; height:60%;left: 90px;top: 25px;">
 
     <!-- Modal header bar -->
     <ion-header-bar class="bar-secondary">
@@ -121,12 +121,9 @@
 
     <!-- Modal content area -->
     <ion-content>
-      <div class="list" ng-repeat="obj in currObjList">
-        <div class="row">
-          <p class="col">{{obj.init_date}}</p>
-
-          <p class="col">{{obj.product_net_value}}</p>
-        </div>
+      <div class="row" ng-repeat="obj in currObjList">
+        <div class="col col-45">{{obj.init_date}}</div>
+        <div class="col">{{obj.product_net_value}}</div>
       </div>
     </ion-content>
   </div>
