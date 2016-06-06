@@ -329,7 +329,7 @@ angular.module('zeus.services', [])
 
           position.realPrice = validData;
           position.currChangePercent = (position.realPrice - position.initialPrice) * 100;
-          position.currChangePercent = position.currChangePercent.toFixed(4);
+          position.currChangePercent = position.currChangePercent.toFixed(2);
           position.currChange = (position.realPrice - position.initialPrice) * position.initialCount;
           position.currChange = position.currChange.toFixed(1);
           if (position.currChangePercent > 0)
