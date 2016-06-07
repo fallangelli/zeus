@@ -200,6 +200,7 @@ angular.module('zeus.controllers', [])
           Positions.fillPosition(positions[i]);
         }
         $rootScope.positions = positions;
+        $scope.positions = positions;
 
 
         var dkpositions = DKPositions.all();
@@ -213,6 +214,7 @@ angular.module('zeus.controllers', [])
           ;
         }
         $rootScope.dkpositions = dkpositions;
+        $scope.dkpositions = dkpositions;
 
         $scope.$broadcast('scroll.refreshComplete');
 
