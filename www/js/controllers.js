@@ -1,7 +1,7 @@
 angular.module('zeus.controllers', [])
 
   .controller('DashCtrl', function ($scope, $rootScope, $state, $timeout, $http, $ionicModal, $ionicPopup,
-                                    DKPositions, Positions, ApiEndpoint, HisData) {
+                                    Scales, DKPositions, Positions, ApiEndpoint, HisData) {
     $scope.$on('$ionicView.enter', function (e) {
       $scope.refreshAll();
     });
@@ -123,6 +123,15 @@ angular.module('zeus.controllers', [])
 
 
       var dkpositions = DKPositions.all();
+      for (var i = 0; i < dkpositions.length; i++) {
+        dkposition = dkpositions[i];
+        Scales.updatePosition(dkposition).then(function (res) {
+        }, function () {
+        });
+        ;
+      }
+
+      $scope.dkpositions = dkpositions;
       var totalMount = parseFloat(0);
       var totalCount = parseFloat(0);
       var totalChangePercent = parseFloat(0);
