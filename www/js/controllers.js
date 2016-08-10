@@ -328,7 +328,7 @@ angular.module('zeus.controllers', [])
         $http.get(myUrl).success(function (data, status, headers, config) {
           var temp = data.split(',')[0];
 
-          $scope.currPrice = data.split(',')[2];
+          $scope.currPrice = data.split(',')[3];
         });
         Scales.query('878004').then(function (res) {
           $scope.scaleCYBUp = res;
