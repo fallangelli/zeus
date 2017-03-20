@@ -36,7 +36,7 @@
       </div>
       <div class="button-bar">
         <a class="button" ng-click="openCYK();">行情
-          <h6>{{currPrice}}</h6>
+          <h6>{{currCYBPrice}}</h6>
         </a>
         <a class="button" ng-click="open_878004();"
            type="item-text-wrap">看涨
@@ -54,12 +54,15 @@
       <div class="button-bar">
         <a class="button" ng-click="open300k();"
            type="item-text-wrap">行情
+          <h6>{{currHS300Price}}</h6>
         </a>
         <a class="button" ng-click="open_878002();"
            type="item-text-wrap">看涨
+          <h6>{{scaleHS300Up}}</h6>
         </a>
         <a class="button" ng-click="open_878003();"
            type="item-text-wrap">看跌
+          <h6>{{scaleHS300Down}}</h6>
         </a>
       </div>
 

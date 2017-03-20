@@ -230,6 +230,10 @@ angular.module('zeus.services', [])
         if (positionString) {
           var positions = angular.fromJson(positionString);
           for (var pos in positions) {
+            if (positions[pos].code == '878002')
+              positions[pos].title = '沪深300看多';
+            if (positions[pos].code == '878003')
+              positions[pos].title = '沪深300看空';
             if (positions[pos].code == '878004')
               positions[pos].title = '创业板看多';
             if (positions[pos].code == '878005')

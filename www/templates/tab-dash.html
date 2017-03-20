@@ -68,7 +68,23 @@
       <form name="taskForm" ng-submit="saveDKPosition(position)">
 
         <div class="list">
+          <label class="item item-radio">
+            <input type="radio" name="DKType" value="878002" ng-model="position.code">
 
+            <div class="item-content">
+              沪深300看涨
+            </div>
+            <i class="radio-icon ion-checkmark"></i>
+          </label>
+
+          <label class="item item-radio">
+            <input type="radio" name="DKType" value="878003" ng-model="position.code">
+
+            <div class="item-content">
+              沪深300看跌
+            </div>
+            <i class="radio-icon ion-checkmark"></i>
+          </label>
           <label class="item item-radio">
             <input type="radio" name="DKType" value="878004" ng-model="position.code">
 
@@ -86,6 +102,7 @@
             </div>
             <i class="radio-icon ion-checkmark"></i>
           </label>
+
           <small class="error" style="color: red" ng-show="taskForm.DKType.$invalid">必选类型</small>
 
           <label class="item item-input item-stacked-label">

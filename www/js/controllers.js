@@ -328,7 +328,7 @@ angular.module('zeus.controllers', [])
         $http.get(myUrl).success(function (data, status, headers, config) {
           var temp = data.split(',')[0];
 
-          $scope.currPrice = data.split(',')[3];
+          $scope.currCYBPrice = data.split(',')[3];
         });
         Scales.query('878004').then(function (res) {
           $scope.scaleCYBUp = res;
@@ -337,6 +337,24 @@ angular.module('zeus.controllers', [])
         });
         Scales.query('878005').then(function (res) {
           $scope.scaleCYBDown = res;
+          $scope.$broadcast('scroll.refreshComplete');
+        }, function () {
+          $scope.$broadcast('scroll.refreshComplete');
+        });
+
+        myUrl = ApiEndpoint.hq_url + "list=sz399300";
+        $http.get(myUrl).success(function (data, status, headers, config) {
+          var temp = data.split(',')[0];
+
+          $scope.currHS300Price = data.split(',')[3];
+        });
+        Scales.query('878002').then(function (res) {
+          $scope.scaleHS300Up = res;
+        }, function () {
+          $scope.$broadcast('scroll.refreshComplete');
+        });
+        Scales.query('878003').then(function (res) {
+          $scope.scaleHS300Down = res;
           $scope.$broadcast('scroll.refreshComplete');
         }, function () {
           $scope.$broadcast('scroll.refreshComplete');
@@ -366,12 +384,24 @@ angular.module('zeus.controllers', [])
 
 //300涨
     $scope.open_878002 = function (code) {
-      window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
+      HisData.queryDKHis('878002').then(function (res) {
+        $scope.currObjList = res;
+        $scope.taskModal.show();
+      }, function () {
+
+      });
+      //window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878002", "_blank", "location=no,toolbar=no");
     };
 
 //300跌
     $scope.open_878003 = function (code) {
-      window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
+      HisData.queryDKHis('878003').then(function (res) {
+        $scope.currObjList = res;
+        $scope.taskModal.show();
+      }, function () {
+
+      });
+      //window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878003", "_blank", "location=no,toolbar=no");
     };
 
     $scope.open300k = function (code) {
@@ -387,8 +417,6 @@ angular.module('zeus.controllers', [])
       }, function () {
 
       });
-
-
       //window.open(ApiEndpoint.gf_url + "index_dkgg.jsp?code=878004", "_blank", "location=no,toolbar=no");
     };
 
